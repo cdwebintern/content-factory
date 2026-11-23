@@ -11,16 +11,18 @@ import TaskColumn from "@/components/tasks/TaskColumn"
 import MeetingColumn from "@/components/meetings/MeetingColumn"
 import SocialColumn from "@/components/social/SocialColumn"
 import { tasks as demoTasks } from "@/data/tasks"
-import { meetings } from "@/data/meetings"
+import { meetings as demoMeetings } from "@/data/meetings"
 import { news } from "@/data/news"
 import { posts } from "@/data/posts"
 import { navGroups } from "@/data/nav"
 import { team, currentUser } from "@/data/team"
-import { useSheetTasks } from "@/hooks/useSheetTasks"
-import { isToday } from "@/lib/dates"
+import { useSheetData } from "@/hooks/useSheetData"
 import { applyLocal, loadLocal, saveLocal, withField } from "@/lib/localTasks"
+import { todaysMeetings } from "@/lib/meetingState"
 import { nextPriority } from "@/lib/priority"
-import { SHEET_CONFIGURED } from "@/lib/sheetTasks"
+import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
+import { fetchSheetMeetings } from "@/lib/sheetMeetings"
+import { fetchSheetTasks } from "@/lib/sheetTasks"
 import { getTaskStats } from "@/lib/taskStats"
 
 // Which nav item scrolls to which element id on this page.
@@ -35,19 +37,33 @@ const SECTION_IDS = {
 const allNavItems = navGroups.flatMap((g) => g.items)
 
 export default function Dashboard() {
-  const sheet = useSheetTasks()
+  const tasksSheet = useSheetData(fetchSheetTasks)
+  const meetingsSheet = useSheetData(fetchSheetMeetings)
   const [local, setLocal] = useState(loadLocal)
   const [activeNav, setActiveNav] = useState("overview")
   const [notice, setNotice] = useState(null)
 
-  // Base tasks come from the sheet, or from the demo data when no sheet is connected.
-  // Local changes (ticks, priorities, and in demo mode adds/deletes) are layered on top.
-  const baseTasks = SHEET_CONFIGURED ? sheet.tasks : demoTasks
-  const tasks = useMemo(() => applyLocal(baseTasks, local), [baseTasks, local])
+  // Base data comes from the sheet, or from the demo data when no sheet is connected.
+  // Local task changes (ticks, priorities, and in demo mode adds/deletes) go on top.
+  const baseTasks = SHEET_CONFIGURED ? tasksSheet.items : demoTasks
+  const meetings = SHEET_CONFIGURED ? meetingsSheet.items : demoMeetings
+  const tasks = useMemo(
+    () => applyLocal(baseTasks, local, !SHEET_CONFIGURED),
+    [baseTasks, local]
+  )
   const canEdit = !SHEET_CONFIGURED
 
+  const loading =
+    SHEET_CONFIGURED &&
+    (tasksSheet.status === "loading" || meetingsSheet.status === "loading")
+
+  const sources = [
+    { label: "Tasks", ...tasksSheet },
+    { label: "Meetings", ...meetingsSheet },
+  ]
+
   const stats = getTaskStats(tasks)
-  const meetingsToday = meetings.filter((m) => isToday(m.start)).length
+  const meetingsTodayCount = todaysMeetings(meetings).length
 
   // Remember local changes between visits
   useEffect(() => {
@@ -127,7 +143,7 @@ export default function Dashboard() {
           </span>
         </header>
 
-        <main className="mx-auto max-w-[1400px] space-y-6 p-4 md:p-8">
+        <main className="mx-auto max-w-350 space-y-6 p-4 md:p-8">
           {notice && (
             <div
               role="status"
@@ -146,15 +162,15 @@ export default function Dashboard() {
           )}
 
           <SyncBar
-            status={sheet.status}
-            error={sheet.error}
-            lastSynced={sheet.lastSynced}
-            skipped={sheet.skipped}
-            refreshing={sheet.refreshing}
-            onRefresh={sheet.reload}
+            sources={sources}
+            refreshing={tasksSheet.refreshing || meetingsSheet.refreshing}
+            onRefresh={() => {
+              tasksSheet.reload()
+              meetingsSheet.reload()
+            }}
           />
 
-          {sheet.status === "loading" ? (
+          {loading ? (
             <DashboardSkeleton />
           ) : (
             <>
@@ -172,11 +188,14 @@ export default function Dashboard() {
                     onAdd={addTask}
                     onDelete={deleteTask}
                     canEdit={canEdit}
-                    loadError={sheet.status === "error"}
+                    loadError={tasksSheet.status === "error"}
                   />
                 </div>
                 <div id="meetings" className="scroll-mt-20">
-                  <MeetingColumn meetings={meetings} />
+                  <MeetingColumn
+                    meetings={meetings}
+                    loadError={meetingsSheet.status === "error"}
+                  />
                 </div>
                 <div id="socials" className="scroll-mt-20 md:col-span-2 xl:col-span-1">
                   <SocialColumn posts={posts} team={team} currentUserId={currentUser.id} />
@@ -187,7 +206,7 @@ export default function Dashboard() {
               <NewsPulse
                 items={news}
                 pending={stats.pending}
-                meetingsToday={meetingsToday}
+                meetingsToday={meetingsTodayCount}
                 overdue={stats.overdue}
               />
             </>

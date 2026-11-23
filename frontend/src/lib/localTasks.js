@@ -54,9 +54,13 @@ function mergeOverrides(task, overrides) {
   return next
 }
 
-export function applyLocal(baseTasks, local) {
-  const deleted = new Set(local.deleted)
-  return [...baseTasks.filter((t) => !deleted.has(t.id)), ...local.added].map((t) =>
+// includeStructural = true in demo mode: apply local adds and deletes.
+// With a Google Sheet connected it is false, so leftover demo-mode adds and deletes
+// can't hide or add tasks, and the sheet stays the single source of truth.
+export function applyLocal(baseTasks, local, includeStructural = true) {
+  const deleted = new Set(includeStructural ? local.deleted : [])
+  const added = includeStructural ? local.added : []
+  return [...baseTasks.filter((t) => !deleted.has(t.id)), ...added].map((t) =>
     mergeOverrides(t, local.overrides)
   )
 }

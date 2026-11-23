@@ -1,11 +1,10 @@
 import { useGreeting } from "@/hooks/useGreeting"
 import { useNow } from "@/hooks/useNow"
-import { isToday } from "@/lib/dates"
+import { isMeetingOver, todaysMeetings } from "@/lib/meetingState"
 import PersonaCard from "./PersonaCard"
 import QuickPills from "./QuickPills"
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`
-const endOf = (m) => new Date(m.start).getTime() + m.durationMin * 60000
 
 // Huge light-weight number with a small lime badge, like the reference
 function BigStat({ value, label, badge }) {
@@ -30,12 +29,13 @@ export default function WelcomeHero({ user, stats, meetings }) {
   const now = useNow(30000) // keeps "Next sync" fresh
   const greeting = useGreeting(user.name.split(" ")[0])
 
+  // First meeting that is live or still to come (skips completed and cancelled)
   const nextMeeting = [...meetings]
-    .sort((a, b) => new Date(a.start) - new Date(b.start))
-    .find((m) => endOf(m) > now.getTime())
+    .sort((a, b) => a.start - b.start)
+    .find((m) => !isMeetingOver(m, now))
 
-  const todays = meetings.filter((m) => isToday(m.start))
-  const meetingsLeft = todays.filter((m) => endOf(m) > now.getTime()).length
+  const todays = todaysMeetings(meetings)
+  const meetingsLeft = todays.filter((m) => !isMeetingOver(m, now)).length
   const dateText = now.toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" })
 
   return (

@@ -101,7 +101,7 @@ export default function TaskColumn({
         <div
           role="tablist"
           aria-label="Filter tasks"
-          className="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
         >
           {TABS.map((tab) => {
             const count = tasks.filter(taskFilters[tab.id]).length
@@ -149,7 +149,7 @@ export default function TaskColumn({
               : EMPTY_MESSAGES[filter]}
           </p>
         ) : (
-          <ul className="max-h-[560px] space-y-2 overflow-y-auto pr-1">
+          <ul className="max-h-140 space-y-2 overflow-y-auto pr-1">
             {visible.map((task) => (
               <TaskCard
                 key={task.id}

@@ -11,15 +11,20 @@ function formatAgo(date, now) {
   return `${Math.round(mins / 60)} h ago`
 }
 
+const latest = (dates) => dates.filter(Boolean).reduce((a, b) => (a > b ? a : b), null)
+
 const actionBtn =
   "inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-900 transition-colors hover:bg-white disabled:opacity-60"
 
-export default function SyncBar({ status, error, lastSynced, skipped, refreshing, onRefresh }) {
+// sources: [{ label, status, error, lastSynced, skipped }, ...]
+export default function SyncBar({ sources, refreshing, onRefresh }) {
   const now = useNow(30000) // keeps "updated 2 min ago" fresh
 
-  if (status === "loading") return null
+  if (sources.some((s) => s.status === "loading")) return null
 
-  if (status === "demo") {
+  const spin = cn("h-3.5 w-3.5", refreshing && "animate-spin motion-reduce:animate-none")
+
+  if (sources.every((s) => s.status === "demo")) {
     return (
       <div
         role="status"
@@ -35,67 +40,70 @@ export default function SyncBar({ status, error, lastSynced, skipped, refreshing
     )
   }
 
-  if (status === "error") {
+  const failed = sources.filter((s) => s.status === "error")
+  if (failed.length > 0) {
     return (
       <div
         role="alert"
-        className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50/90 px-4 py-3 text-sm text-red-900"
+        className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50/90 px-4 py-3 text-sm text-red-900"
       >
-        <p>
-          <b>Couldn't load tasks from Google Sheets.</b> {error}
-        </p>
-        <button
-          type="button"
-          onClick={onRefresh}
-          disabled={refreshing}
-          className={cn(actionBtn, focusRing)}
-        >
-          <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin motion-reduce:animate-none")} />
+        <div className="space-y-1">
+          <p className="font-semibold">Couldn't load from Google Sheets.</p>
+          <ul className="list-disc space-y-0.5 pl-5">
+            {failed.map((s) => (
+              <li key={s.label}>
+                <b>{s.label}:</b> {s.error}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <button type="button" onClick={onRefresh} disabled={refreshing} className={cn(actionBtn, focusRing)}>
+          <RefreshCw className={spin} />
           Try again
         </button>
       </div>
     )
   }
 
+  const lastSynced = latest(sources.map((s) => s.lastSynced))
+  const refreshErrors = sources.filter((s) => s.error)
+  const withSkipped = sources.filter((s) => s.skipped.length > 0)
+
   return (
     <div className="space-y-2 rounded-2xl border border-white/80 bg-white/60 px-4 py-2.5 text-sm backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <span className="inline-flex items-center gap-2 text-neutral-700">
           <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden />
-          Synced from Google Sheets · updated {formatAgo(lastSynced, now)}
+                   Synced from Google Sheets · {sources.map((s) => `${s.items.length} ${s.label.toLowerCase()}`).join(" · ")}
+          {lastSynced ? ` · updated ${formatAgo(lastSynced, now)}` : ""}
         </span>
-        <button
-          type="button"
-          onClick={onRefresh}
-          disabled={refreshing}
-          className={cn(actionBtn, focusRing)}
-        >
-          <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin motion-reduce:animate-none")} />
+        <button type="button" onClick={onRefresh} disabled={refreshing} className={cn(actionBtn, focusRing)}>
+          <RefreshCw className={spin} />
           {refreshing ? "Refreshing" : "Refresh"}
         </button>
       </div>
 
-      {error && (
-        <p role="status" className="text-xs text-amber-700">
-          Couldn't refresh ({error}). Showing the last synced data.
+      {refreshErrors.map((s) => (
+        <p key={s.label} role="status" className="text-xs text-amber-700">
+          Couldn't refresh {s.label} ({s.error}). Showing the last synced data.
         </p>
-      )}
+      ))}
 
-            {skipped.length > 0 && (
-        <details className="text-xs text-amber-800">
+      {withSkipped.map((s) => (
+        <details key={s.label} className="text-xs text-amber-800">
           <summary className="cursor-pointer font-medium">
-            {skipped.length} {skipped.length === 1 ? "row was" : "rows were"} skipped
+            {s.label}: {s.skipped.length} {s.skipped.length === 1 ? "row was" : "rows were"} skipped
           </summary>
           <ul className="mt-1.5 list-disc space-y-0.5 pl-5">
-            {skipped.slice(0, 10).map((s) => (
-              <li key={`${s.row}-${s.reason}`}>
-                Row {s.row}: {s.reason}
+            {s.skipped.slice(0, 10).map((x) => (
+              <li key={`${x.row}-${x.reason}`}>
+                Row {x.row}: {x.reason}
               </li>
             ))}
-            {skipped.length > 10 && <li>…and {skipped.length - 10} more</li>}
+            {s.skipped.length > 10 && <li>…and {s.skipped.length - 10} more</li>}
           </ul>
         </details>
-      )}
+      ))}
     </div>
   )
 }

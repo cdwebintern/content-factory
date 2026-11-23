@@ -1,17 +1,10 @@
 import { useState } from "react"
 import { Flame } from "lucide-react"
 import { celebrate } from "@/lib/confetti"
-import { formatTime, minutesUntil } from "@/lib/dates"
+import { formatWhen, minutesUntil, untilLabel } from "@/lib/dates"
+import { cn } from "@/lib/utils"
 
 const pill = "rounded-full border border-white/80 bg-white/70 backdrop-blur-md"
-
-function countdown(mins) {
-  if (mins <= 0) return "In progress"
-  if (mins < 60) return `in ${mins} min`
-  const h = Math.floor(mins / 60)
-  const m = mins % 60
-  return `in ${h}h${m ? ` ${m}m` : ""}`
-}
 
 export default function QuickPills({ nextMeeting, highCount }) {
   const [fives, setFives] = useState(0)
@@ -20,31 +13,42 @@ export default function QuickPills({ nextMeeting, highCount }) {
     <div className="flex flex-wrap items-center gap-3">
       {/* 1. Next sync + Join */}
       {nextMeeting ? (
-        <div className={`${pill} flex items-center gap-3 py-1.5 pl-4 pr-1.5`}>
+        <div
+          className={cn(
+            pill,
+            "flex items-center gap-3 py-1.5 pl-4",
+            nextMeeting.link ? "pr-1.5" : "pr-4"
+          )}
+        >
           <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 motion-reduce:animate-none" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
           </span>
           <div className="text-sm leading-tight">
             <p className="font-semibold text-neutral-900">
-              Next sync · {formatTime(nextMeeting.start)}
+              Next sync · {formatWhen(nextMeeting.start)}
             </p>
             <p className="text-xs text-neutral-500">
-              {countdown(minutesUntil(nextMeeting.start))} · {nextMeeting.client}
+              {minutesUntil(nextMeeting.start) <= 0
+                ? "In progress"
+                : untilLabel(nextMeeting.start)}{" "}
+              · {nextMeeting.attendees || nextMeeting.title}
             </p>
           </div>
-          <a
-            href={nextMeeting.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full bg-neutral-900 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
-          >
-            Join
-          </a>
+          {nextMeeting.link && (
+            <a
+              href={nextMeeting.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-neutral-900 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+            >
+              Join
+            </a>
+          )}
         </div>
       ) : (
         <div className={`${pill} px-4 py-2.5 text-sm text-neutral-600`}>
-          No more meetings today
+          No upcoming meetings
         </div>
       )}
 

@@ -1,12 +1,6 @@
 import { cn } from "@/lib/utils"
 import { focusRing } from "@/lib/glass"
 
-export const PRIORITIES = ["low", "medium", "high", "urgent"]
-
-// Low -> Medium -> High -> Urgent -> back to Low
-export const nextPriority = (p) =>
-  PRIORITIES[(PRIORITIES.indexOf(p) + 1) % PRIORITIES.length]
-
 const styles = {
   low: "bg-black/5 text-neutral-600 hover:bg-black/10",
   medium: "bg-sky-100 text-sky-800 hover:bg-sky-200",

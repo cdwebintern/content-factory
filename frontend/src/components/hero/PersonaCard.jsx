@@ -6,7 +6,7 @@ export default function PersonaCard({ user, cutoutSrc = "/bilal-cutout.png" }) {
   const [cutoutOk, setCutoutOk] = useState(true)
 
   return (
-    <div className="relative hidden min-h-[300px] overflow-hidden rounded-3xl bg-[#cfe9de] md:block">
+    <div className="relative hidden min-h-75 overflow-hidden rounded-3xl bg-[#cfe9de] md:block">
       {/* Lime ribbon, decorative */}
       <svg
         aria-hidden

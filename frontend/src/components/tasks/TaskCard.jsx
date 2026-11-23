@@ -43,7 +43,7 @@ export default function TaskCard({
       )}
     >
       <Checkbox
-        className="mt-0.5 border-neutral-400 data-[checked]:border-neutral-900 data-[checked]:bg-neutral-900 data-[checked]:text-white data-[state=checked]:border-neutral-900 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-white"
+        className="mt-0.5 border-neutral-400 data-checked:border-neutral-900 data-checked:bg-neutral-900 data-checked:text-white data-[state=checked]:border-neutral-900 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-white"
         checked={task.done}
         onCheckedChange={onToggle}
         aria-label={`Mark "${task.title}" as ${task.done ? "not done" : "done"}`}

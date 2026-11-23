@@ -32,7 +32,7 @@ const startOfDay = (date) => {
   return d
 }
 
-// Returns { text, tone } so the component decides icon + colour
+// Returns { text, tone } so the component decides icon + colour (used for tasks)
 export function dueLabel(date) {
   const diff = Math.round((startOfDay(date) - startOfDay(new Date())) / 86400000)
   if (diff === 0) return { text: "Today", tone: "today" }
@@ -43,4 +43,31 @@ export function dueLabel(date) {
     text: new Date(date).toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" }),
     tone: "later",
   }
+}
+
+// "Today", "Tomorrow", "Yesterday" or "Fri 27 Nov" (used for meetings)
+export function dayLabel(date) {
+  const diff = Math.round((startOfDay(date) - startOfDay(new Date())) / 86400000)
+  if (diff === 0) return "Today"
+  if (diff === 1) return "Tomorrow"
+  if (diff === -1) return "Yesterday"
+  return new Date(date).toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" })
+}
+
+// "10:00 AM" for today, "Tomorrow, 10:00 AM" or "Fri 27 Nov, 4:00 PM" otherwise
+export const formatWhen = (date) =>
+  isToday(date) ? formatTime(date) : `${dayLabel(date)}, ${formatTime(date)}`
+
+// "now", "in 25 min", "in 2h 5m" or "in 3 days"
+export function untilLabel(date) {
+  const mins = minutesUntil(date)
+  if (mins <= 0) return "now"
+  if (mins < 60) return `in ${mins} min`
+  if (mins < 1440) {
+    const h = Math.floor(mins / 60)
+    const m = mins % 60
+    return `in ${h}h${m ? ` ${m}m` : ""}`
+  }
+  const days = Math.floor(mins / 1440)
+  return `in ${days} ${days === 1 ? "day" : "days"}`
 }
