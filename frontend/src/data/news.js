@@ -1,0 +1,42 @@
+export const news = [
+  {
+    id: "n1",
+    category: "SEO / AEO",
+    headline: "Google expands AI Overviews: answer-first content is getting cited more",
+    source: "Search Engine Land",
+    readTime: "4 min read",
+    takeaway: "Add a 40-60 word direct answer under every H2 on client service pages. Start with Lakeside Dental's FAQ.",
+  },
+  {
+    id: "n2",
+    category: "Meta Ads",
+    headline: "Meta shifts Reels delivery: first 2 seconds now weigh more in ranking",
+    source: "Social Media Today",
+    readTime: "3 min read",
+    takeaway: "Re-cut Peak Fitness ads so the hook lands before the 2-second mark. Test captions-first openers.",
+  },
+  {
+    id: "n3",
+    category: "Winning Ad",
+    headline: "Breakdown: the 'problem-flip' hook behind a 4x ROAS skincare video ad",
+    source: "Foreplay",
+    readTime: "5 min read",
+    takeaway: "Try 'Stop doing X, do this instead' hooks on the Nova Skincare reel. Brief Sara for 3 variants.",
+  },
+  {
+    id: "n4",
+    category: "Local SEO",
+    headline: "GMB update: photo freshness and Q&A activity now appear in ranking signals",
+    source: "Search Engine Journal",
+    readTime: "3 min read",
+    takeaway: "Upload 5 fresh photos and answer open Q&As for every GMB client this week.",
+  },
+  {
+    id: "n5",
+    category: "Content",
+    headline: "LinkedIn carousels see 3x engagement vs single-image posts in B2B",
+    source: "Social Insider",
+    readTime: "4 min read",
+    takeaway: "Convert Brightpath's top blog post into a 7-slide carousel and test it as a pilot.",
+  },
+]

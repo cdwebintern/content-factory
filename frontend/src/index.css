@@ -1,1 +1,60 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+
+
+
+/* Hero background motion */
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.15); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-70px, 30px) scale(0.95); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -50px) scale(1.2); }
+}
+@keyframes silk {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-24px, 10px); }
+}
+
+.animate-drift-a { animation: drift-a 16s ease-in-out infinite; }
+.animate-drift-b { animation: drift-b 20s ease-in-out infinite; }
+.animate-drift-c { animation: drift-c 24s ease-in-out infinite; }
+.animate-silk { animation: silk 14s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift-a,
+  .animate-drift-b,
+  .animate-drift-c,
+  .animate-silk {
+    animation: none;
+  }
+}
+
+/* ===== Iridescent glass theme ===== */
+@theme {
+  --color-lime-accent: #e9ff6f;
+}
+
+:root {
+  --radius: 1.5rem;
+  --background: #ffffff;
+  --foreground: #111214;
+  --card: rgb(255 255 255 / 0.62);
+  --card-foreground: #111214;
+  --primary: #121212;
+  --primary-foreground: #ffffff;
+  --border: rgb(17 18 20 / 0.08);
+  --input: rgb(17 18 20 / 0.12);
+  --ring: #121212;
+}
+
+body {
+  font-family: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+}
