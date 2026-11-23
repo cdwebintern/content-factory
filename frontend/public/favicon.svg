@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Content Space favicon">
+  <rect width="128" height="128" rx="27" fill="#111214"/>
+  <path d="M78 34.5C72 29.1 64.2 26 55.5 26 34 26 18 42.9 18 64s16 38 37.5 38c8.7 0 16.5-3.1 22.5-8.5"
+        fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+  <path d="M79 50h27a3 3 0 0 1 0 6H79a3 3 0 0 1 0-6Z" fill="#E9FF6F"/>
+  <path d="M79 61h19a3 3 0 0 1 0 6H79a3 3 0 0 1 0-6Z" fill="#E9FF6F" opacity=".88"/>
+  <path d="M79 72h24a3 3 0 0 1 0 6H79a3 3 0 0 1 0-6Z" fill="#E9FF6F" opacity=".76"/>
+</svg>

@@ -9,7 +9,8 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
     <div className="flex h-full flex-col">
       <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-black/5 px-5">
         <div className="grid h-8 w-8 place-items-center rounded-xl bg-neutral-900 font-bold text-lime-accent">
-          A
+          <img src="/favicon.svg"   alt="Content Space Logo"
+    className="h-6 w-6 object-contain"/>
         </div>
         <span className="text-lg font-semibold tracking-tight">Content Space</span>
       </div>
