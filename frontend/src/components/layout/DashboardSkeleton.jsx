@@ -11,21 +11,34 @@ function Block({ className }) {
   )
 }
 
-export default function DashboardSkeleton() {
+export default function DashboardSkeleton({ variant = "home" }) {
   return (
     <div role="status" className="space-y-6">
-      <span className="sr-only">Loading dashboard</span>
+      <span className="sr-only">Loading</span>
 
-      {/* Hero */}
-      <Block className="h-[360px]" />
-      {/* Three columns */}
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        <Block className="h-[520px]" />
-        <Block className="h-[520px]" />
-        <Block className="h-[520px] md:col-span-2 xl:col-span-1" />
-      </div>
-      {/* News pulse */}
-      <Block className="h-56" />
+      {variant === "home" ? (
+        <>
+          <Block className="h-[420px] sm:h-[360px]" />
+          <div className="grid items-start gap-6 xl:grid-cols-3">
+            <div className="space-y-6 xl:col-span-2">
+              <Block className="h-[420px]" />
+              <Block className="h-[360px]" />
+            </div>
+            <Block className="h-[520px]" />
+          </div>
+          <Block className="h-56" />
+        </>
+      ) : (
+        <>
+          <Block className="h-24 rounded-2xl" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Block key={i} className="h-20 rounded-2xl" />
+            ))}
+          </div>
+          <Block className="h-[480px]" />
+        </>
+      )}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { focusRing } from "@/lib/glass"
 import PostSlider from "./PostSlider"
 import TeamRoster from "./TeamRoster"
+import { Share2 } from "lucide-react"
 
 const TABS = [
   { id: "queue", label: "Socials queue" },
@@ -27,6 +28,8 @@ export default function SocialColumn({ posts: initialPosts, team, currentUserId 
   return (
     <GlassCard
       title="Socials & team"
+      tone="violet"
+icon={Share2}
       description={
         tab === "queue"
           ? awaiting === 0

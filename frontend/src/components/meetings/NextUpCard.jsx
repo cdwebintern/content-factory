@@ -8,8 +8,8 @@ export default function NextUpCard({ meeting }) {
   const startsText = live ? "In progress" : `Starts ${untilLabel(meeting.start)}`
 
   return (
-    <div className="space-y-4 rounded-3xl bg-neutral-900 p-5 text-white shadow-lg">
-      <div className="flex items-center justify-between gap-2">
+    <div className="flex h-full min-w-0 flex-col gap-4 rounded-3xl bg-neutral-900 p-4 text-white shadow-lg sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Pulsing badge: a ping circle layered behind a solid dot */}
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white">
           <span className="relative flex h-2 w-2">
@@ -21,30 +21,34 @@ export default function NextUpCard({ meeting }) {
         <span className="text-xs font-medium text-lime-accent">{startsText}</span>
       </div>
 
-      <div className="space-y-1">
+      <div className="min-w-0 space-y-1">
         <p className="text-sm font-medium text-white/70">{dayLabel(meeting.start)}</p>
-        <p className="text-5xl font-light tracking-tight text-lime-accent">
+        <p className="text-4xl font-light tracking-tight text-lime-accent">
           {formatTime(meeting.start)}
         </p>
-        <h3 className="text-base font-medium leading-snug">{meeting.title}</h3>
+        <h3 className="break-words text-base font-medium leading-snug">{meeting.title}</h3>
         {meeting.description && (
-          <p className="text-sm leading-snug text-white/70">{meeting.description}</p>
+          <p className="break-words text-sm leading-snug text-white/70">{meeting.description}</p>
         )}
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/70">
         <span className="inline-flex items-center gap-1.5">
-          <Users className="h-4 w-4" />
+          <Users className="h-4 w-4 shrink-0" />
           {meeting.attendees || "No attendees listed"}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="h-4 w-4" />
+          <Clock className="h-4 w-4 shrink-0" />
           {meeting.durationMin} min · ends {formatTime(meeting.end)}
         </span>
         <PriorityBadge priority={meeting.priority} onDark />
       </div>
 
-      {meeting.link && <JoinButton href={meeting.link} size="lg" />}
+      {meeting.link && (
+        <div className="mt-auto">
+          <JoinButton href={meeting.link} size="lg" />
+        </div>
+      )}
     </div>
   )
 }

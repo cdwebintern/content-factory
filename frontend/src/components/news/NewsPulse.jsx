@@ -26,7 +26,7 @@ export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
   const next = () => setIndex((i) => (i + 1) % items.length)
 
   return (
-    <GlassCard className="space-y-5">
+    <GlassCard  tone="peach" className="space-y-5">
       {/* Header: title on the left, live stats pill on the right */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-3">
@@ -87,7 +87,7 @@ export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
         </div>
 
         {/* Controls: dots on the left, arrows on the right */}
-        <div className="flex items-center justify-between">
+        <div  className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {items.map((it, i) => (
               <button

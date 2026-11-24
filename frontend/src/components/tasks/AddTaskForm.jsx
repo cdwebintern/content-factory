@@ -1,14 +1,11 @@
 import { useState } from "react"
 import { X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { focusRing } from "@/lib/glass"
+import { getMember, team, currentUser } from "@/data/team"
 import { serviceTags } from "@/data/nav"
-import { team, currentUser, getMember } from "@/data/team"
+import { field, fieldLabel } from "@/lib/formStyles"
+import { focusRing } from "@/lib/glass"
 import { PRIORITIES } from "@/lib/priority"
-
-const field =
-  "w-full rounded-xl border border-white/80 bg-white/80 px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
-const label = "mb-1 block text-xs font-medium text-neutral-600"
+import { cn } from "@/lib/utils"
 
 // <input type="date"> wants "YYYY-MM-DD" in LOCAL time
 const toInputDate = (d = new Date()) => {
@@ -60,14 +57,14 @@ export default function AddTaskForm({ onAdd, onCancel }) {
           type="button"
           onClick={onCancel}
           aria-label="Close form"
-          className={cn("rounded-full p-1 text-neutral-500 hover:bg-black/5", focusRing)}
+          className={cn("rounded-full p-2 text-neutral-500 hover:bg-black/5", focusRing)}
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
       <div>
-        <label htmlFor="new-task-title" className={label}>
+        <label htmlFor="new-task-title" className={fieldLabel}>
           Title
         </label>
         <input
@@ -91,9 +88,9 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label htmlFor="new-task-service" className={label}>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="min-w-0">
+          <label htmlFor="new-task-service" className={fieldLabel}>
             Service
           </label>
           <select
@@ -110,8 +107,8 @@ export default function AddTaskForm({ onAdd, onCancel }) {
           </select>
         </div>
 
-        <div>
-          <label htmlFor="new-task-due" className={label}>
+        <div className="min-w-0">
+          <label htmlFor="new-task-due" className={fieldLabel}>
             Due date
           </label>
           <input
@@ -126,7 +123,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
       </div>
 
       <div>
-        <label htmlFor="new-task-assignee" className={label}>
+        <label htmlFor="new-task-assignee" className={fieldLabel}>
           Assign to
         </label>
         <select
@@ -145,8 +142,8 @@ export default function AddTaskForm({ onAdd, onCancel }) {
       </div>
 
       <div>
-        <span className={label}>Priority</span>
-        <div className="grid grid-cols-4 gap-1 rounded-full bg-black/5 p-1">
+        <span className={fieldLabel}>Priority</span>
+        <div className="grid grid-cols-2 gap-1 rounded-2xl bg-black/5 p-1 sm:grid-cols-4 sm:rounded-full">
           {PRIORITIES.map((p) => (
             <button
               key={p}
@@ -154,7 +151,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
               aria-pressed={priority === p}
               onClick={() => setPriority(p)}
               className={cn(
-                "rounded-full px-2 py-1.5 text-xs font-medium capitalize transition-colors",
+                "rounded-full px-2 py-2 text-xs font-medium capitalize transition-colors",
                 focusRing,
                 priority === p
                   ? "bg-neutral-900 text-white shadow-sm"
@@ -167,12 +164,12 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 pt-1">
+      <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
         <button
           type="button"
           onClick={onCancel}
           className={cn(
-            "rounded-full border border-white/80 bg-white/70 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-white",
+            "rounded-full border border-white/80 bg-white/70 px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-white",
             focusRing
           )}
         >
@@ -181,7 +178,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         <button
           type="submit"
           className={cn(
-            "rounded-full bg-neutral-900 px-5 py-2 text-sm font-semibold text-white hover:bg-neutral-700",
+            "rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-700",
             focusRing
           )}
         >

@@ -1,16 +1,55 @@
-import { cn } from "@/lib/utils"
 import { glass } from "@/lib/glass"
+import { cn } from "@/lib/utils"
 
-// Replaces shadcn <Card> for every section
-export default function GlassCard({ title, description, className, children }) {
+// Each tone is a soft tint over the glass, so cards are easy to tell apart
+// but still belong to the same pastel palette as the page background.
+const TONES = {
+  neutral: { card: "", chip: "bg-neutral-900 text-lime-accent" },
+  lime: { card: "from-lime-accent/45 via-white/55 to-white/45", chip: "bg-neutral-900 text-lime-accent" },
+  sky: { card: "from-sky-200/60 via-white/55 to-white/45", chip: "bg-neutral-900 text-sky-300" },
+  violet: { card: "from-violet-200/60 via-white/55 to-white/45", chip: "bg-neutral-900 text-violet-300" },
+  peach: { card: "from-orange-200/60 via-white/55 to-white/45", chip: "bg-neutral-900 text-orange-300" },
+}
+
+// "@container" lets everything inside size itself by the card's width (@lg:, @3xl:...)
+export default function GlassCard({
+  title,
+  description,
+  icon: Icon,
+  action,
+  tone = "neutral",
+  className,
+  children,
+}) {
+  const t = TONES[tone] ?? TONES.neutral
+
   return (
-    <section className={cn(glass, "flex flex-col p-5 md:p-6", className)}>
-      {(title || description) && (
-        <header className="mb-4 space-y-0.5">
-          {title && (
-            <h2 className="text-lg font-semibold tracking-tight text-neutral-900">{title}</h2>
-          )}
-          {description && <div className="text-sm text-neutral-500">{description}</div>}
+    <section
+      className={cn(
+        glass,
+        "@container flex min-w-0 flex-col bg-gradient-to-br p-4 sm:p-5 md:p-6",
+        t.card,
+        className
+      )}
+    >
+      {(title || action) && (
+        <header className="mb-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+          <div className="flex min-w-0 items-center gap-3">
+            {Icon && (
+              <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-2xl", t.chip)}>
+                <Icon className="h-5 w-5" />
+              </span>
+            )}
+            <div className="min-w-0">
+              {title && (
+                <h2 className="text-lg font-semibold leading-tight tracking-tight text-neutral-900">
+                  {title}
+                </h2>
+              )}
+              {description && <div className="text-sm text-neutral-600">{description}</div>}
+            </div>
+          </div>
+          {action}
         </header>
       )}
       {children}

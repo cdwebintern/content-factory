@@ -74,7 +74,7 @@ export default function PostSlider({ posts, onApprove }) {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           {posts.map((p, i) => (
             <button

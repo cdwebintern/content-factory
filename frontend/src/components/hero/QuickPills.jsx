@@ -16,19 +16,19 @@ export default function QuickPills({ nextMeeting, highCount }) {
         <div
           className={cn(
             pill,
-            "flex items-center gap-3 py-1.5 pl-4",
+            "flex max-w-full items-center gap-3 py-1.5 pl-4",
             nextMeeting.link ? "pr-1.5" : "pr-4"
           )}
         >
-          <span className="relative flex h-2.5 w-2.5">
+          <span className="relative flex h-2.5 w-2.5 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 motion-reduce:animate-none" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
           </span>
-          <div className="text-sm leading-tight">
-            <p className="font-semibold text-neutral-900">
+          <div className="min-w-0 text-sm leading-tight">
+            <p className="truncate font-semibold text-neutral-900">
               Next sync · {formatWhen(nextMeeting.start)}
             </p>
-            <p className="text-xs text-neutral-500">
+            <p className="truncate text-xs text-neutral-500">
               {minutesUntil(nextMeeting.start) <= 0
                 ? "In progress"
                 : untilLabel(nextMeeting.start)}{" "}
@@ -40,7 +40,7 @@ export default function QuickPills({ nextMeeting, highCount }) {
               href={nextMeeting.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-neutral-900 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+              className="shrink-0 rounded-full bg-neutral-900 px-4 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
             >
               Join
             </a>
