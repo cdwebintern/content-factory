@@ -3,13 +3,18 @@ import { DataContext } from "./dataContext"
 import { tasks as demoTasks } from "@/data/tasks"
 import { meetings as demoMeetings } from "@/data/meetings"
 import { useSheetData } from "@/hooks/useSheetData"
-import { applyLocal, loadLocal, saveLocal, withField } from "@/lib/localTasks"
+import { useTaskEditing } from "@/hooks/useTaskEditing"
+import { API_CONFIGURED } from "@/lib/api"
+import { applyLocal, emptyLocal, loadLocal, saveLocal, withField } from "@/lib/localTasks"
 import { todaysMeetings } from "@/lib/meetingState"
 import { nextPriority } from "@/lib/priority"
 import { fetchSheetMeetings } from "@/lib/sheetMeetings"
 import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
 import { fetchSheetTasks } from "@/lib/sheetTasks"
+import { applyEdits } from "@/lib/taskEdits"
 import { getTaskStats } from "@/lib/taskStats"
+
+const NO_LOCAL = emptyLocal()
 
 // Owns all task and meeting data, so every page shares one copy and the
 // sheet is fetched once instead of every time you change page.
@@ -18,16 +23,25 @@ export default function DataProvider({ children }) {
   const meetingsSheet = useSheetData(fetchSheetMeetings)
   const [local, setLocal] = useState(loadLocal)
 
-  // Base data comes from the sheet, or from the demo data when no sheet is connected.
-  // Local task changes (ticks, priorities, and in demo mode adds/deletes) go on top.
+  // Sync mode: a sheet AND the save server are configured, so edits are saved to the sheet
+  const syncMode = SHEET_CONFIGURED && API_CONFIGURED
+  const editing = useTaskEditing({ reload: tasksSheet.reload })
+
   const baseTasks = SHEET_CONFIGURED ? tasksSheet.items : demoTasks
   const meetings = SHEET_CONFIGURED ? meetingsSheet.items : demoMeetings
+
+  // Layers, bottom to top: sheet (or demo) data, unsaved/just-saved edits (sync mode),
+  // then device-only changes (every other mode)
+  const edited = useMemo(
+    () => (syncMode ? applyEdits(baseTasks, editing.edits, tasksSheet.syncStartedAt) : baseTasks),
+    [syncMode, baseTasks, editing.edits, tasksSheet.syncStartedAt]
+  )
   const tasks = useMemo(
-    () => applyLocal(baseTasks, local, !SHEET_CONFIGURED),
-    [baseTasks, local]
+    () => applyLocal(edited, syncMode ? NO_LOCAL : local, !SHEET_CONFIGURED),
+    [edited, syncMode, local]
   )
 
-  // Remember local changes between visits
+  // Remember device-only changes between visits
   useEffect(() => {
     saveLocal(local)
   }, [local])
@@ -38,8 +52,22 @@ export default function DataProvider({ children }) {
       return baseTask ? withField(prev, baseTask, field, compute) : prev
     })
 
-  const toggleTask = (id) => changeField(id, "done", (done) => !done)
-  const cyclePriority = (id) => changeField(id, "priority", nextPriority)
+  const toggleTask = (id) => {
+    if (!syncMode) return changeField(id, "done", (done) => !done)
+    const task = tasks.find((t) => t.id === id)
+    if (task) editing.edit(id, { done: !task.done })
+  }
+
+  const cyclePriority = (id) => {
+    if (!syncMode) return changeField(id, "priority", nextPriority)
+    const task = tasks.find((t) => t.id === id)
+    if (task) editing.edit(id, { priority: nextPriority(task.priority) })
+  }
+
+  // fields: any of { title, due: "yyyy-mm-dd", priority, done }
+  const editTask = (id, fields) => {
+    if (syncMode) editing.edit(id, fields)
+  }
 
   const addTask = (task) => setLocal((prev) => ({ ...prev, added: [task, ...prev.added] }))
 
@@ -57,7 +85,8 @@ export default function DataProvider({ children }) {
     meetings,
     stats: getTaskStats(tasks),
     meetingsTodayCount: todaysMeetings(meetings).length,
-    canEdit: !SHEET_CONFIGURED, // with a sheet connected, tasks are edited in Google Sheets
+    canEdit: !SHEET_CONFIGURED, // add and delete: demo mode only
+    canEditFields: syncMode, // title and due date: saved to the sheet
     loading:
       SHEET_CONFIGURED &&
       (tasksSheet.status === "loading" || meetingsSheet.status === "loading"),
@@ -72,8 +101,15 @@ export default function DataProvider({ children }) {
       tasksSheet.reload()
       meetingsSheet.reload()
     },
+    saveStatus: {
+      saving: editing.saving,
+      error: editing.error,
+      savedAt: editing.savedAt,
+      dismissError: editing.dismissError,
+    },
     toggleTask,
     cyclePriority,
+    editTask,
     addTask,
     deleteTask,
   }

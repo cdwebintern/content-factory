@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react"
-import { Clock, Flame, Trash2 } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { Clock, Flame, Pencil, Trash2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { getInitials } from "@/data/team"
 import { dueLabel } from "@/lib/dates"
 import { formatFullDate } from "@/lib/dateFormat"
 import { focusRing, tile } from "@/lib/glass"
+import { isValidYMD, toYMD } from "@/lib/taskEdits"
 import { cn } from "@/lib/utils"
 import PriorityPill from "./PriorityPill"
 
@@ -28,12 +29,22 @@ export default function TaskCard({
   onToggle,
   onCyclePriority,
   onDelete, // optional: no handler means no delete button
+  onEditTitle, // optional: (newTitle) => void, adds the pencil
+  onEditDue, // optional: ("yyyy-mm-dd") => void, adds a date picker in detailed cards
   highlight = false,
   detailed = false,
 }) {
   const due = dueLabel(task.due)
   const status = statusChip(task, due)
   const [confirming, setConfirming] = useState(false)
+
+  // Title editing: Enter or clicking away saves, Escape cancels
+  const [editingTitle, setEditingTitle] = useState(false)
+  const [draft, setDraft] = useState("")
+  const finished = useRef(false) // stops Enter + blur from saving twice
+
+  // Date editing keeps what is typed until the date is complete and valid
+  const [dateDraft, setDateDraft] = useState(null)
 
   // If the user doesn't confirm within 3 seconds, go back to the normal icon
   useEffect(() => {
@@ -42,35 +53,92 @@ export default function TaskCard({
     return () => clearTimeout(id)
   }, [confirming])
 
+  const startEditing = () => {
+    finished.current = false
+    setDraft(task.title)
+    setEditingTitle(true)
+  }
+
+  const finishEditing = (save) => {
+    if (finished.current) return
+    finished.current = true
+    setEditingTitle(false)
+
+    const clean = draft.trim()
+    if (save && clean && clean !== task.title) onEditTitle(clean)
+  }
+
+  const handleDateChange = (value) => {
+    setDateDraft(value)
+    if (isValidYMD(value) && value !== toYMD(task.due)) onEditDue(value)
+  }
+
   return (
     <li
       id={`task-${task.id}`}
       className={cn(
         tile,
-        "flex min-w-0 flex-col gap-3 p-3.5 transition-colors hover:bg-white/90",
+        "flex min-w-0 flex-col gap-3 border-2 border-neutral-900/25 p-3.5 transition-colors hover:bg-white/90",
         task.done && "bg-white/40",
         highlight && "ring-2 ring-neutral-900"
       )}
     >
       <div className="flex items-start gap-3">
         <Checkbox
-          className="mt-0.5 h-5 w-5 shrink-0 border-neutral-400 data-[checked]:border-neutral-900 data-[checked]:bg-neutral-900 data-[checked]:text-white data-[state=checked]:border-neutral-900 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-white"
+          className="mt-0.5 h-5 w-5 shrink-0 border-neutral-400 data-checked:border-neutral-900 data-checked:bg-neutral-900 data-checked:text-white data-[state=checked]:border-neutral-900 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-white"
           checked={task.done}
           onCheckedChange={onToggle}
           aria-label={`Mark "${task.title}" as ${task.done ? "not done" : "done"}`}
         />
-        <p
-          className={cn(
-            "min-w-0 flex-1 break-words text-sm font-medium leading-snug text-neutral-900",
-            task.done && "text-neutral-500 line-through"
-          )}
-        >
-          {task.title}
-        </p>
-        {detailed && (
-          <span className="shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[11px] text-neutral-500">
-            {task.id}
-          </span>
+
+        {editingTitle ? (
+          <input
+            autoFocus
+            value={draft}
+            maxLength={120}
+            aria-label="Task title"
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                finishEditing(true)
+              } else if (e.key === "Escape") {
+                e.preventDefault()
+                finishEditing(false)
+              }
+            }}
+            onBlur={() => finishEditing(true)}
+            className="min-w-0 flex-1 rounded-lg border border-neutral-900/20 bg-white px-2 py-1 text-base text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 sm:text-sm"
+          />
+        ) : (
+          <>
+            <p
+              className={cn(
+                "min-w-0 flex-1 wrap-break-word text-sm font-medium leading-snug text-neutral-900",
+                task.done && "text-neutral-500 line-through"
+              )}
+            >
+              {task.title}
+            </p>
+            {/* {detailed && (
+              <span className="shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[11px] text-neutral-500">
+                {task.id}
+              </span>
+            )} */}
+            {onEditTitle && (
+              <button
+                type="button"
+                onClick={startEditing}
+                aria-label={`Edit title of "${task.title}"`}
+                className={cn(
+                  "shrink-0 rounded-full p-2 text-neutral-400 transition-colors hover:bg-black/5 hover:text-neutral-800",
+                  focusRing
+                )}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </>
         )}
       </div>
 
@@ -82,7 +150,22 @@ export default function TaskCard({
 
         {detailed ? (
           <>
-            <span className="text-xs text-neutral-600">{formatFullDate(task.due)}</span>
+            {onEditDue ? (
+              <label className="inline-flex items-center">
+                <span className="sr-only">Due date</span>
+                <input
+                  type="date"
+                  value={dateDraft ?? toYMD(task.due)}
+                  min="2000-01-01"
+                  max="2100-12-31"
+                  onChange={(e) => handleDateChange(e.target.value)}
+                  onBlur={() => setDateDraft(null)}
+                  className="min-w-0 rounded-lg border border-white/80 bg-white/80 px-2 py-1 text-base text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 sm:text-xs"
+                />
+              </label>
+            ) : (
+              <span className="text-xs text-neutral-600">{formatFullDate(task.due)}</span>
+            )}
             <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", status.className)}>
               {status.text}
             </span>

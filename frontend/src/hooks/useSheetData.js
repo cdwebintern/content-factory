@@ -26,6 +26,7 @@ export function useSheetData(fetcher, refreshMs = 60000) {
   const [loading, setLoading] = useState(enabled)
   const [refreshing, setRefreshing] = useState(false)
   const [lastSynced, setLastSynced] = useState(null)
+  const [syncStartedAt, setSyncStartedAt] = useState(0) // when the latest successful read began
   const [reloadKey, setReloadKey] = useState(0) // bumping this re-runs the effect
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export function useSheetData(fetcher, refreshMs = 60000) {
       controller?.abort()
       const current = new AbortController()
       controller = current
+      const startedAt = Date.now()
       const name = fetcher.name || "loader"
 
       // State is only set inside these callbacks, never directly in the effect body
@@ -53,6 +55,7 @@ export function useSheetData(fetcher, refreshMs = 60000) {
           setData(result)
           setError(null)
           setLastSynced(new Date())
+          setSyncStartedAt(startedAt)
           setLoading(false)
           setRefreshing(false)
         })
@@ -96,6 +99,7 @@ export function useSheetData(fetcher, refreshMs = 60000) {
     skipped: data?.skipped ?? NO_SKIPPED,
     error,
     lastSynced,
+    syncStartedAt,
     refreshing,
     reload,
   }

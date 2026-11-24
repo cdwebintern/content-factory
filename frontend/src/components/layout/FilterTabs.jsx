@@ -7,7 +7,7 @@ export default function FilterTabs({ tabs, value, onChange, label }) {
     <div
       role="tablist"
       aria-label={label}
-      className="-mx-1 flex gap-1.5 overflow-x-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-1 flex gap-1.5 overflow-x-auto px-1 py-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
     >
       {tabs.map((tab) => {
         const active = value === tab.id

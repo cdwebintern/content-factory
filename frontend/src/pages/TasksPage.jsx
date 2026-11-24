@@ -36,6 +36,7 @@ const EMPTY = {
 export default function TasksPage() {
   const { tasks, stats, canEdit, tasksStatus, toggleTask, cyclePriority, addTask, deleteTask } =
     useData()
+    const { canEditFields, editTask } = useData()
 
   const [filter, setFilter] = useState("pending")
   const [query, setQuery] = useState("")
@@ -116,7 +117,9 @@ export default function TasksPage() {
         description={
           canEdit
             ? "Every task, with its service, due date, priority and owner."
-            : "Every task from your Google Sheet. Edit tasks in the sheet; ticks and priority changes made here stay on this device."
+            : canEditFields
+  ? "Every task from your Google Sheet. Changes you make here (title, due date, priority, done) are saved back to the sheet."
+  : "Every task from your Google Sheet. Edit tasks in the sheet; ticks and priority changes made here stay on this device."
         }
         action={addButton}
       />
@@ -215,7 +218,9 @@ export default function TasksPage() {
                   detailed
                   highlight={task.id === lastAddedId}
                   onToggle={() => toggleTask(task.id)}
-                  onCyclePriority={() => cyclePriority(task.id)}
+                 onCyclePriority={() => cyclePriority(task.id)}
+onEditTitle={canEditFields ? (title) => editTask(task.id, { title }) : undefined}
+onEditDue={canEditFields ? (due) => editTask(task.id, { due }) : undefined}
                   onDelete={canEdit ? () => deleteTask(task.id) : undefined}
                 />
               ))}

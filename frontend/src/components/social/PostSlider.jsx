@@ -35,7 +35,7 @@ export default function PostSlider({ posts, onApprove }) {
       {/* key={post.id} remounts the slide so it fades in on every change */}
       <div
         key={post.id}
-        className="flex min-h-[270px] animate-in flex-col gap-4 rounded-2xl border border-white/80 bg-gradient-to-br from-lime-accent/30 via-white/70 to-white/60 p-5 duration-500 fade-in"
+        className="flex min-h-67.5 animate-in flex-col gap-4 rounded-2xl border border-white/80 bg-linear-to-br from-lime-accent/30 via-white/70 to-white/60 p-5 duration-500 fade-in"
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <PlatformBadge platform={post.platform} format={post.format} />

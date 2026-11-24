@@ -6,6 +6,7 @@ import DashboardSkeleton from "./DashboardSkeleton"
 import MobileNav from "./MobileNav"
 import Sidebar from "./Sidebar"
 import SyncBar from "./SyncBar"
+import SaveStatus from "./SaveStatus"
 import { useData } from "@/context/dataContext"
 import { navGroups } from "@/data/nav"
 import { scrollToTop } from "@/lib/scroll"
@@ -66,6 +67,7 @@ export default function AppShell() {
   return (
     <div className="relative isolate flex min-h-screen overflow-x-clip">
       <AppBackground />
+      <SaveStatus />
 
       {/* Desktop sidebar */}
       <Sidebar
@@ -95,7 +97,7 @@ export default function AppShell() {
           </span>
         </header>
 
-        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 md:p-8">
+        <main className="mx-auto w-full max-w-350 space-y-6 p-4 md:p-8">
           {notice && (
             <div
               role="status"

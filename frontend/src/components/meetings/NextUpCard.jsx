@@ -26,9 +26,9 @@ export default function NextUpCard({ meeting }) {
         <p className="text-4xl font-light tracking-tight text-lime-accent">
           {formatTime(meeting.start)}
         </p>
-        <h3 className="break-words text-base font-medium leading-snug">{meeting.title}</h3>
+        <h3 className="wrap-break-word text-base font-medium leading-snug">{meeting.title}</h3>
         {meeting.description && (
-          <p className="break-words text-sm leading-snug text-white/70">{meeting.description}</p>
+          <p className="wrap-break-word text-sm leading-snug text-white/70">{meeting.description}</p>
         )}
       </div>
 

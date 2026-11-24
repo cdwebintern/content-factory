@@ -18,13 +18,13 @@ export default function DashboardSkeleton({ variant = "home" }) {
 
       {variant === "home" ? (
         <>
-          <Block className="h-[420px] sm:h-[360px]" />
+          <Block className="h-105 sm:h-90" />
           <div className="grid items-start gap-6 xl:grid-cols-3">
             <div className="space-y-6 xl:col-span-2">
-              <Block className="h-[420px]" />
-              <Block className="h-[360px]" />
+              <Block className="h-105" />
+              <Block className="h-90" />
             </div>
-            <Block className="h-[520px]" />
+            <Block className="h-130" />
           </div>
           <Block className="h-56" />
         </>
@@ -36,7 +36,7 @@ export default function DashboardSkeleton({ variant = "home" }) {
               <Block key={i} className="h-20 rounded-2xl" />
             ))}
           </div>
-          <Block className="h-[480px]" />
+          <Block className="h-120" />
         </>
       )}
     </div>

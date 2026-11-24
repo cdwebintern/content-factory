@@ -58,7 +58,7 @@ export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
         {/* key={item.id} remounts the slide on change so it can fade in */}
         <div
           key={item.id}
-          className="grid animate-in gap-5 fade-in duration-500 md:min-h-[150px] md:grid-cols-5"
+          className="grid animate-in gap-5 fade-in duration-500 md:min-h-37.5 md:grid-cols-5"
         >
           <div className="space-y-3 md:col-span-3">
             <span

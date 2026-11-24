@@ -27,6 +27,7 @@ export default function MeetingCard({ meeting, now = new Date(), detailed = fals
       className={cn(
         tile,
         "flex min-w-0 flex-col gap-2.5 p-3.5",
+        !isNext && "border-2 border-neutral-900/25",
         muted && "bg-white/40",
         isNext && "ring-2 ring-neutral-900"
       )}
@@ -51,7 +52,7 @@ export default function MeetingCard({ meeting, now = new Date(), detailed = fals
 
       <p
         className={cn(
-          "break-words text-sm font-medium leading-snug text-neutral-900",
+          "wrap-break-word text-sm font-medium leading-snug text-neutral-900",
           muted && "text-neutral-500",
           phase === "cancelled" && "line-through"
         )}
@@ -60,7 +61,7 @@ export default function MeetingCard({ meeting, now = new Date(), detailed = fals
       </p>
 
       {detailed && meeting.description && (
-        <p className="break-words text-xs leading-snug text-neutral-600">{meeting.description}</p>
+        <p className="wrap-break-word text-xs leading-snug text-neutral-600">{meeting.description}</p>
       )}
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500">

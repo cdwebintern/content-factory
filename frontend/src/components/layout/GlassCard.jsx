@@ -27,7 +27,7 @@ export default function GlassCard({
     <section
       className={cn(
         glass,
-        "@container flex min-w-0 flex-col bg-gradient-to-br p-4 sm:p-5 md:p-6",
+        "@container flex min-w-0 flex-col bg-linear-to-br p-4 sm:p-5 md:p-6",
         t.card,
         className
       )}
