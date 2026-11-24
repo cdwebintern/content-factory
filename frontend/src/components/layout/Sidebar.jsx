@@ -12,7 +12,7 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
           <img src="/favicon.svg"   alt="Content Space Logo"
     className="h-6 w-6 object-contain"/>
         </div>
-        <span className="text-lg font-semibold tracking-tight">Content Space</span>
+        <span className="text-lg font-semibold tracking-tight">Content Factory</span>
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
