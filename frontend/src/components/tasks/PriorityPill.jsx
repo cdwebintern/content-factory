@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils"
 import { focusRing } from "@/lib/glass"
 
 const styles = {
-  low: "bg-black/5 text-neutral-600 hover:bg-black/10",
-  medium: "bg-sky-100 text-sky-800 hover:bg-sky-200",
-  high: "bg-orange-100 text-orange-800 hover:bg-orange-200",
+  low: "bg-ink/5 text-ink-muted hover:bg-ink/10",
+  medium: "bg-accent-soft text-accent-burnt hover:bg-accent-mist",
+  high: "bg-accent-mist text-accent-ink hover:bg-accent-tint",
   urgent: "bg-red-500 text-white hover:bg-red-600",
 }
 
@@ -17,7 +17,7 @@ export default function PriorityPill({ priority, onCycle }) {
       title="Click to change priority"
       aria-label={`Priority ${priority}. Click to change.`}
       className={cn(
-        "rounded-full px-3 py-1 text-xs font-medium capitalize transition-colors",
+        "rounded-full px-3 py-1 text-xs font-medium capitalize transition-all duration-200 hover:-translate-y-0.5",
         focusRing,
         styles[priority]
       )}

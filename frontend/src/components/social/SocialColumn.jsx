@@ -28,7 +28,7 @@ export default function SocialColumn({ posts: initialPosts, team, currentUserId 
   return (
     <GlassCard
       title="Socials & team"
-      tone="violet"
+      tone="soft"
 icon={Share2}
       description={
         tab === "queue"
@@ -43,7 +43,7 @@ icon={Share2}
         <div
           role="tablist"
           aria-label="Socials or team"
-          className="grid grid-cols-2 gap-1 rounded-full bg-black/5 p-1"
+          className="grid grid-cols-2 gap-1 rounded-full bg-accent-ink/5 p-1"
         >
           {TABS.map((t) => (
             <button
@@ -53,11 +53,11 @@ icon={Share2}
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                "rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200",
                 focusRing,
                 tab === t.id
-                  ? "bg-neutral-900 text-white shadow-sm"
-                  : "text-neutral-600 hover:text-neutral-900"
+                  ? "bg-accent-strong text-white shadow-sm shadow-accent-ink/20"
+                  : "text-ink-muted hover:bg-accent-soft/70 hover:text-accent-ink"
               )}
             >
               {t.label}

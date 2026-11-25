@@ -12,18 +12,18 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-black/5 px-5">
-        <div className="grid h-8 w-8 place-items-center rounded-xl bg-neutral-900 font-bold text-lime-accent">
+      <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-accent-ink/5 px-5">
+        <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-honey font-bold text-white shadow-sm shadow-accent-strong/30">
           C
         </div>
-        <span className="text-lg font-semibold tracking-tight">Content Factory</span>
+        <span className="text-lg font-semibold tracking-tight text-ink">Content Factory</span>
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
         <nav className="space-y-6 p-4">
           {navGroups.map((group) => (
             <div key={group.title}>
-              <p className="mb-2 px-3 text-xs font-medium text-neutral-600">{group.title}</p>
+              <p className="mb-2 px-3 text-xs font-medium text-ink-faint">{group.title}</p>
               <ul className="space-y-1">
                 {group.items.map((item) => {
                   const Icon = item.icon
@@ -35,16 +35,16 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
                         onClick={() => onSelect(item.id)}
                         aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "flex w-full items-center gap-3 rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900",
+                          "flex w-full items-center gap-3 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong",
                           isActive
-                            ? "bg-neutral-900 text-white shadow-sm"
-                            : "text-neutral-700 hover:bg-white/70 hover:text-neutral-900"
+                            ? "bg-gradient-to-r from-accent-strong to-accent-honey text-white shadow-sm shadow-accent-strong/25"
+                            : "text-ink-soft hover:translate-x-0.5 hover:bg-accent-soft/70 hover:text-accent-ink"
                         )}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className={cn("h-4 w-4", isActive ? "text-white" : "text-accent-strong/80")} />
                         <span className="flex-1 text-left">{item.label}</span>
                         {item.id === "tasks" && tasksCount > 0 && (
-                          <Badge className="h-5 min-w-5 justify-center bg-lime-accent px-1.5 text-[11px] text-neutral-900 hover:bg-lime-accent">
+                          <Badge className="h-5 min-w-5 justify-center bg-accent px-1.5 text-[11px] text-white hover:bg-accent">
                             {tasksCount}
                           </Badge>
                         )}
@@ -57,13 +57,13 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
           ))}
 
           <div>
-            <p className="mb-2 px-3 text-xs font-medium text-neutral-600">Service areas</p>
+            <p className="mb-2 px-3 text-xs font-medium text-ink-faint">Service areas</p>
             <div className="flex flex-wrap gap-2 px-2">
               {serviceTags.map((tag) => (
                 <Badge
                   key={tag}
                   variant="outline"
-                  className="cursor-pointer border-black/10 bg-white/60 font-normal hover:bg-lime-accent"
+                  className="cursor-pointer border-black/10 bg-white/60 font-normal transition-colors hover:border-accent-tint hover:bg-accent-soft hover:text-accent-ink"
                 >
                   {tag}
                 </Badge>
@@ -74,19 +74,19 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
       </ScrollArea>
 
       {/* Settings and profile stay pinned to the bottom */}
-      <div className="shrink-0 space-y-2 border-t border-black/5 p-4">
+      <div className="shrink-0 space-y-2 border-t border-accent-ink/5 p-4">
         <button
           type="button"
           onClick={() => onSelect("settings")}
           aria-current={settingsActive ? "page" : undefined}
           className={cn(
-            "flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900",
+            "flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong",
             settingsActive
-              ? "bg-neutral-900 text-white shadow-sm"
-              : "text-neutral-700 hover:bg-white/70 hover:text-neutral-900"
+              ? "bg-gradient-to-r from-accent-strong to-accent-honey text-white shadow-sm shadow-accent-strong/25"
+              : "text-ink-soft hover:translate-x-0.5 hover:bg-accent-soft/70 hover:text-accent-ink"
           )}
         >
-          <Settings className="h-4 w-4" />
+          <Settings className={cn("h-4 w-4", settingsActive ? "text-white" : "text-accent-strong/80")} />
           <span className="flex-1 text-left">Settings</span>
         </button>
 
@@ -96,16 +96,16 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
           aria-current={profileActive ? "page" : undefined}
           aria-label="Open your profile"
           className={cn(
-            "flex w-full items-center gap-3 rounded-2xl border p-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900",
+            "flex w-full items-center gap-3 rounded-2xl border p-2.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong",
             profileActive
-              ? "border-neutral-900 bg-neutral-900 text-white"
-              : "border-white/80 bg-white/60 text-neutral-900 hover:bg-white"
+              ? "border-accent-strong bg-gradient-to-r from-accent-strong to-accent-honey text-white shadow-sm shadow-accent-strong/25"
+              : "border-white/80 bg-white/60 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white"
           )}
         >
           <span
             className={cn(
               "grid h-9 w-9 shrink-0 place-items-center rounded-full text-xs font-semibold",
-              profileActive ? "bg-lime-accent text-neutral-900" : "bg-neutral-900 text-lime-accent"
+              profileActive ? "bg-white text-accent-deep" : "bg-ink text-accent-mist"
             )}
           >
             {getInitials(currentUser.name)}
@@ -113,7 +113,7 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
           <span className="min-w-0 flex-1 text-left leading-tight">
             <span className="block truncate text-sm font-semibold">{currentUser.name}</span>
             <span
-              className={cn("block truncate text-xs", profileActive ? "text-white/70" : "text-neutral-600")}
+              className={cn("block truncate text-xs", profileActive ? "text-white/80" : "text-ink-muted")}
             >
               Profile · {currentUser.role}
             </span>
@@ -128,7 +128,7 @@ export default function Sidebar({ className, ...props }) {
   return (
     <aside
       className={cn(
-        "sticky top-0 h-screen w-64 shrink-0 border-r border-white/60 bg-white/40 backdrop-blur-xl",
+        "sticky top-0 h-screen w-64 shrink-0 border-r border-white/70 bg-white/50 backdrop-blur-xl",
         className
       )}
     >

@@ -6,14 +6,14 @@ import { focusRing } from "@/lib/glass"
 import PlatformBadge from "./PlatformBadge"
 
 const arrowBtn =
-  "grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/70 text-neutral-900 transition-colors hover:bg-white"
+  "grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/70 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint hover:bg-accent-wash hover:text-accent-ink"
 
 export default function PostSlider({ posts, onApprove }) {
   const { index, setIndex, paused, setPaused } = useAutoCycle(posts.length, 7000)
 
   if (posts.length === 0) {
     return (
-      <p className="py-10 text-center text-sm text-neutral-500">No posts scheduled yet.</p>
+      <p className="py-10 text-center text-sm text-ink-faint">No posts scheduled yet.</p>
     )
   }
 
@@ -35,27 +35,27 @@ export default function PostSlider({ posts, onApprove }) {
       {/* key={post.id} remounts the slide so it fades in on every change */}
       <div
         key={post.id}
-        className="flex min-h-67.5 animate-in flex-col gap-4 rounded-2xl border border-white/80 bg-linear-to-br from-lime-accent/30 via-white/70 to-white/60 p-5 duration-500 fade-in"
+        className="flex min-h-67.5 animate-in flex-col gap-4 rounded-2xl border border-white/80 bg-linear-to-br from-accent-mist/50 via-white/70 to-white/60 p-5 duration-500 fade-in"
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <PlatformBadge platform={post.platform} format={post.format} />
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500">
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink-faint">
             <Clock className="h-3.5 w-3.5" />
             {dueLabel(post.scheduledAt).text}, {formatTime(post.scheduledAt)}
           </span>
         </div>
 
         <div>
-          <p className="text-xs text-neutral-500">Client</p>
-          <p className="text-base font-semibold text-neutral-900">{post.client}</p>
+          <p className="text-xs text-ink-faint">Client</p>
+          <p className="text-base font-semibold text-ink">{post.client}</p>
         </div>
 
-        <blockquote className="flex-1 rounded-xl border-l-4 border-neutral-900 bg-white/80 p-3 text-sm leading-relaxed text-neutral-800">
+        <blockquote className="flex-1 rounded-xl border-l-4 border-accent bg-white/80 p-3 text-sm leading-relaxed text-ink-deep">
           “{post.hook}”
         </blockquote>
 
         {post.approved ? (
-          <div className="flex items-center justify-center gap-2 rounded-full bg-lime-accent px-4 py-2.5 text-sm font-semibold text-neutral-900">
+          <div className="flex items-center justify-center gap-2 rounded-full bg-accent-mist px-4 py-2.5 text-sm font-semibold text-accent-ink">
             <Check className="h-4 w-4" />
             Approved
           </div>
@@ -64,7 +64,7 @@ export default function PostSlider({ posts, onApprove }) {
             type="button"
             onClick={(e) => onApprove(post.id, e)}
             className={cn(
-              "w-full rounded-full bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-neutral-700",
+              "hover-lift w-full rounded-full bg-accent-strong px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
               focusRing
             )}
           >
@@ -87,12 +87,12 @@ export default function PostSlider({ posts, onApprove }) {
                 "h-2 rounded-full transition-all",
                 focusRing,
                 i === index
-                  ? cn("w-6", p.approved ? "bg-emerald-500" : "bg-neutral-900")
-                  : cn("w-2", p.approved ? "bg-emerald-300" : "bg-black/15 hover:bg-black/30")
+                  ? cn("w-6", p.approved ? "bg-emerald-500" : "bg-accent-strong")
+                  : cn("w-2", p.approved ? "bg-emerald-300" : "bg-accent-ink/20 hover:bg-accent-ink/40")
               )}
             />
           ))}
-          <span className="ml-2 text-xs text-neutral-500">
+          <span className="ml-2 text-xs text-ink-faint">
             {paused ? "Paused · " : ""}
             {approvedCount} of {posts.length} approved
           </span>

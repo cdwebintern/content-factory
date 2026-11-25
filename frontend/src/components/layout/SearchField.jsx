@@ -7,7 +7,7 @@ export default function SearchField({ value, onChange, placeholder, label, class
     <div className={cn("relative", className)}>
       <Search
         aria-hidden
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400"
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-accent-light"
       />
       <input
         type="search"

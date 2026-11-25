@@ -33,6 +33,7 @@ export default function MeetingColumn({ meetings, loadError = false }) {
 
   return (
     <GlassCard
+      tone="warm"
       title="Upcoming meetings"
       description={upcoming.length === 0 ? "Nothing coming up" : `${upcoming.length} upcoming`}
     >
@@ -40,7 +41,7 @@ export default function MeetingColumn({ meetings, loadError = false }) {
         {next ? (
           <NextUpCard meeting={next} />
         ) : (
-          <p className="py-10 text-center text-sm text-neutral-500">
+          <p className="py-10 text-center text-sm text-ink-faint">
             {loadError
               ? "Meetings couldn't be loaded. See the message at the top of the page."
               : "No upcoming meetings 🎉"}
@@ -51,7 +52,7 @@ export default function MeetingColumn({ meetings, loadError = false }) {
           <div className="max-h-105 space-y-4 overflow-y-auto pr-1">
             {groups.map((g) => (
               <div key={g.label} className="space-y-2">
-                <p className="text-xs font-medium text-neutral-500">{g.label}</p>
+                <p className="text-xs font-medium text-ink-faint">{g.label}</p>
                 <ul className="space-y-2">
                   {g.items.map((m) => (
                     <MeetingCard key={m.id} meeting={m} />
@@ -64,7 +65,7 @@ export default function MeetingColumn({ meetings, loadError = false }) {
 
         {earlier.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-medium text-neutral-500">Earlier</p>
+            <p className="text-xs font-medium text-ink-faint">Earlier</p>
             <ul className="space-y-2">
               {shownEarlier.map((m) => (
                 <MeetingCard key={m.id} meeting={m} past />
@@ -75,7 +76,7 @@ export default function MeetingColumn({ meetings, loadError = false }) {
                 type="button"
                 onClick={() => setShowAllEarlier((v) => !v)}
                 className={cn(
-                  "rounded-full px-3 py-1 text-xs font-medium text-neutral-600 hover:bg-black/5",
+                  "rounded-full px-3 py-1 text-xs font-medium text-ink-muted transition-colors hover:bg-accent-soft hover:text-accent-ink",
                   focusRing
                 )}
               >

@@ -6,15 +6,15 @@ import { focusRing } from "@/lib/glass"
 import StatsStrip from "./StatsStrip"
 
 const categoryStyles = {
-  "SEO / AEO": "bg-sky-100 text-sky-800",
-  "Meta Ads": "bg-blue-100 text-blue-800",
-  "Winning Ad": "bg-lime-accent text-neutral-900",
-  "Local SEO": "bg-emerald-100 text-emerald-800",
-  Content: "bg-orange-100 text-orange-800",
+  "SEO / AEO": "bg-accent-soft text-accent-burnt",
+  "Meta Ads": "bg-accent-soft text-accent-ink",
+  "Winning Ad": "bg-accent text-white",
+  "Local SEO": "bg-accent-mist text-accent-ink",
+  Content: "bg-accent-soft text-accent-burnt",
 }
 
 const arrowBtn =
-  "grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/70 text-neutral-900 transition-colors hover:bg-white"
+  "grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/70 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint hover:bg-accent-wash hover:text-accent-ink"
 
 export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
   const { index, setIndex, paused, setPaused } = useAutoCycle(items.length, 6000)
@@ -26,18 +26,18 @@ export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
   const next = () => setIndex((i) => (i + 1) % items.length)
 
   return (
-    <GlassCard  tone="peach" className="space-y-5">
+    <GlassCard  tone="tint" className="space-y-5">
       {/* Header: title on the left, live stats pill on the right */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-neutral-900 text-lime-accent">
+          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-accent to-accent-honey text-white shadow-sm shadow-accent-strong/30">
             <Sparkles className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold leading-tight tracking-tight text-neutral-900">
+            <h2 className="text-lg font-semibold leading-tight tracking-tight text-ink">
               Daily news &amp; winning ads
             </h2>
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-ink-faint">
               What's moving in marketing today, and what we should do about it
             </p>
           </div>
@@ -64,25 +64,25 @@ export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
             <span
               className={cn(
                 "inline-block rounded-full px-3 py-1 text-xs font-semibold",
-                categoryStyles[item.category] ?? "bg-black/5 text-neutral-700"
+                categoryStyles[item.category] ?? "bg-accent-ink/5 text-ink-soft"
               )}
             >
               {item.category}
             </span>
-            <h3 className="text-2xl font-normal leading-snug tracking-tight text-neutral-900 md:text-3xl">
+            <h3 className="text-2xl font-normal leading-snug tracking-tight text-ink md:text-3xl">
               {item.headline}
             </h3>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-ink-faint">
               {item.source} · {item.readTime}
             </p>
           </div>
 
-          <div className="rounded-2xl bg-lime-accent/50 p-4 md:col-span-2">
-            <p className="flex items-center gap-1.5 text-sm font-semibold text-neutral-900">
-              <Lightbulb className="h-4 w-4" />
+          <div className="rounded-2xl bg-accent-mist/60 p-4 md:col-span-2">
+            <p className="flex items-center gap-1.5 text-sm font-semibold text-accent-dark">
+              <Lightbulb className="h-4 w-4 text-accent-strong" />
               Actionable takeaway
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-800">{item.takeaway}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink-deep">{item.takeaway}</p>
           </div>
         </div>
 
@@ -99,11 +99,11 @@ export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
                 className={cn(
                   "h-2 rounded-full transition-all",
                   focusRing,
-                  i === index ? "w-6 bg-neutral-900" : "w-2 bg-black/15 hover:bg-black/30"
+                  i === index ? "w-6 bg-accent-strong" : "w-2 bg-accent-ink/20 hover:bg-accent-ink/40"
                 )}
               />
             ))}
-            {paused && <span className="ml-2 text-xs text-neutral-500">Paused</span>}
+            {paused && <span className="ml-2 text-xs text-ink-faint">Paused</span>}
           </div>
 
           <div className="flex gap-1">

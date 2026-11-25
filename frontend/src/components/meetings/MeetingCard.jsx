@@ -14,9 +14,9 @@ import PriorityBadge from "./PriorityBadge"
 
 const PHASES = {
   live: { text: "Live now", className: "bg-red-100 text-red-700" },
-  upcoming: { text: "Scheduled", className: "bg-sky-100 text-sky-800" },
+  upcoming: { text: "Scheduled", className: "bg-accent-soft text-accent-burnt" },
   completed: { text: "Completed", className: "bg-emerald-100 text-emerald-800" },
-  ended: { text: "Ended", className: "bg-black/5 text-neutral-600" },
+  ended: { text: "Ended", className: "bg-black/5 text-ink-muted" },
   cancelled: { text: "Cancelled", className: "bg-red-100 text-red-700" },
 }
 const MUTED = ["completed", "ended", "cancelled"]
@@ -91,7 +91,7 @@ export default function MeetingCard({
     return (
       <li
         id={`meeting-${meeting.id}`}
-        className={cn(tile, "flex min-w-0 flex-col gap-3 border-2 border-neutral-900/25 p-3.5")}
+        className={cn(tile, "flex min-w-0 flex-col gap-3 border-2 border-accent-ink/15 p-3.5 shadow-sm shadow-accent-ink/5")}
       >
         <form onSubmit={saveEdit} className="space-y-2.5">
           <div>
@@ -174,7 +174,7 @@ export default function MeetingCard({
               type="button"
               onClick={() => setEditing(false)}
               className={cn(
-                "rounded-full border border-white/80 bg-white/70 px-3.5 py-1.5 text-xs font-medium text-neutral-700 hover:bg-white",
+                "rounded-full border border-white/80 bg-white/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white hover:text-accent-ink",
                 focusRing
               )}
             >
@@ -183,7 +183,7 @@ export default function MeetingCard({
             <button
               type="submit"
               className={cn(
-                "rounded-full bg-neutral-900 px-4 py-1.5 text-xs font-semibold text-white hover:bg-neutral-700",
+                "hover-lift rounded-full bg-accent-strong px-4 py-1.5 text-xs font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent",
                 focusRing
               )}
             >
@@ -200,17 +200,17 @@ export default function MeetingCard({
       id={`meeting-${meeting.id}`}
       className={cn(
         tile,
-        "flex min-w-0 flex-col gap-2.5 p-3.5",
-        !isNext && "border-2 border-neutral-900/25",
+        "flex min-w-0 flex-col gap-2.5 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint/70 hover:bg-white/90 hover:shadow-md hover:shadow-accent-ink/10",
+        !isNext && "border-2 border-accent-ink/15",
         muted && "bg-white/40",
-        isNext && "ring-2 ring-neutral-900"
+        isNext && "ring-2 ring-accent-strong"
       )}
     >
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <p className="text-sm font-semibold text-neutral-900">
+        <p className="text-sm font-semibold text-ink">
           {formatTime(meeting.start)} – {formatTime(meeting.end)}
         </p>
-        <span className="text-xs text-neutral-500">
+        <span className="text-xs text-ink-faint">
           {detailed ? formatFullDate(meeting.start) : dayLabel(meeting.start)}
         </span>
         <span className="ml-auto">
@@ -230,7 +230,7 @@ export default function MeetingCard({
       </div>
 
       {isNext && (
-        <span className="w-fit rounded-full bg-neutral-900 px-2.5 py-0.5 text-[11px] font-semibold text-lime-accent">
+        <span className="w-fit rounded-full bg-gradient-to-r from-accent-strong to-accent-honey px-2.5 py-0.5 text-[11px] font-semibold text-white shadow-sm shadow-accent-strong/25">
           NEXT UP
         </span>
       )}
@@ -238,8 +238,8 @@ export default function MeetingCard({
       <div className="flex items-start gap-2">
         <p
           className={cn(
-            "min-w-0 flex-1 wrap-break-word text-sm font-medium leading-snug text-neutral-900",
-            muted && "text-neutral-500",
+            "min-w-0 flex-1 wrap-break-word text-sm font-medium leading-snug text-ink",
+            muted && "text-ink-faint",
             phase === "cancelled" && "line-through"
           )}
         >
@@ -251,7 +251,7 @@ export default function MeetingCard({
             onClick={openEditor}
             aria-label={`Edit "${meeting.title}"`}
             className={cn(
-              "shrink-0 rounded-full p-1.5 text-neutral-400 transition-colors hover:bg-black/5 hover:text-neutral-800",
+              "shrink-0 rounded-full p-1.5 text-ink-subtle transition-colors hover:bg-accent-soft hover:text-accent-burnt",
               focusRing
             )}
           >
@@ -261,10 +261,10 @@ export default function MeetingCard({
       </div>
 
       {detailed && meeting.description && (
-        <p className="wrap-break-word text-xs leading-snug text-neutral-600">{meeting.description}</p>
+        <p className="wrap-break-word text-xs leading-snug text-ink-muted">{meeting.description}</p>
       )}
 
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-faint">
         <span className="inline-flex items-center gap-1">
           <Users className="h-3 w-3 shrink-0" />
           {meeting.attendees || "No attendees listed"}
@@ -278,7 +278,7 @@ export default function MeetingCard({
       {(detailed || canJoin) && (
         <div
           className={cn(
-            "mt-auto flex flex-wrap items-center gap-2 border-t border-black/5 pt-2.5",
+            "mt-auto flex flex-wrap items-center gap-2 border-t border-accent-ink/5 pt-2.5",
             detailed ? "justify-between" : "justify-end"
           )}
         >
@@ -296,7 +296,7 @@ export default function MeetingCard({
                     title="Mark completed"
                     aria-label={`Mark "${meeting.title}" as completed`}
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-neutral-700 hover:bg-emerald-50 hover:text-emerald-800",
+                      "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800",
                       focusRing
                     )}
                   >
@@ -309,7 +309,7 @@ export default function MeetingCard({
                     title="Cancel meeting"
                     aria-label={`Cancel "${meeting.title}"`}
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-neutral-700 hover:bg-red-50 hover:text-red-700",
+                      "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700",
                       focusRing
                     )}
                   >
@@ -326,7 +326,7 @@ export default function MeetingCard({
                   title="Reopen as scheduled"
                   aria-label={`Reopen "${meeting.title}"`}
                   className={cn(
-                    "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-neutral-700 hover:bg-sky-50 hover:text-sky-800",
+                    "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-accent-mist hover:bg-accent-wash hover:text-accent-burnt",
                     focusRing
                   )}
                 >

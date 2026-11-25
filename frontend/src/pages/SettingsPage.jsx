@@ -11,13 +11,13 @@ import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
 import { cn } from "@/lib/utils"
 
 const button =
-  "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
+  "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200"
 
 function Row({ label, value }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-black/5 py-2.5 last:border-b-0">
-      <dt className="text-sm text-neutral-600">{label}</dt>
-      <dd className="text-sm font-medium text-neutral-900">{value}</dd>
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-accent-ink/5 py-2.5 last:border-b-0">
+      <dt className="text-sm text-ink-muted">{label}</dt>
+      <dd className="text-sm font-medium text-ink">{value}</dd>
     </div>
   )
 }
@@ -66,7 +66,7 @@ export default function SettingsPage() {
       />
 
       <GlassCard
-        tone="sky"
+        tone="warm"
         icon={Link2}
         title="Meetings"
         description="The link a new meeting starts with. You can still change it for each meeting."
@@ -95,11 +95,11 @@ export default function SettingsPage() {
                 {error}
               </p>
             )}
-            <p id="default-link-help" className="mt-2 text-xs text-neutral-600">
+            <p id="default-link-help" className="mt-2 text-xs text-ink-muted">
               {defaultMeetingLink ? (
                 <>
                   New meetings start with{" "}
-                  <span className="break-all font-medium text-neutral-900">{defaultMeetingLink}</span>{" "}
+                  <span className="break-all font-medium text-accent-burnt">{defaultMeetingLink}</span>{" "}
                   ({usingOwnLink ? "your setting" : "the link most used in your sheet"}).
                 </>
               ) : (
@@ -111,7 +111,7 @@ export default function SettingsPage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <button
               type="submit"
-              className={cn(button, "bg-neutral-900 text-white hover:bg-neutral-700", focusRing)}
+              className={cn(button, "hover-lift bg-accent-strong text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md", focusRing)}
             >
               Save
             </button>
@@ -121,7 +121,7 @@ export default function SettingsPage() {
                 onClick={useSheetLink}
                 className={cn(
                   button,
-                  "border border-white/80 bg-white/70 text-neutral-800 hover:bg-white",
+                  "border border-white/80 bg-white/70 text-ink-deep hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white",
                   focusRing
                 )}
               >
@@ -138,7 +138,7 @@ export default function SettingsPage() {
       </GlassCard>
 
       <GlassCard
-        tone="lime"
+        tone="deep"
         icon={Database}
         title="Google Sheets connection"
         description="Where your tasks and meetings come from."
@@ -171,7 +171,7 @@ export default function SettingsPage() {
             disabled={refreshing}
             className={cn(
               button,
-              "mt-4 w-fit border border-white/80 bg-white/80 text-neutral-900 hover:bg-white disabled:opacity-60",
+              "mt-4 w-fit border border-white/80 bg-white/80 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white disabled:opacity-60",
               focusRing
             )}
           >
@@ -184,7 +184,7 @@ export default function SettingsPage() {
       </GlassCard>
 
       <GlassCard
-        tone="peach"
+        tone="tint"
         icon={RotateCcw}
         title="This device"
         description="Changes the dashboard only remembers on this device, such as ticks when saving is off and demo tasks."
@@ -205,13 +205,13 @@ export default function SettingsPage() {
             "w-fit",
             confirmReset
               ? "bg-red-500 text-white hover:bg-red-600"
-              : "border border-white/80 bg-white/80 text-neutral-900 hover:bg-white",
+              : "border border-white/80 bg-white/80 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white",
             focusRing
           )}
         >
           {confirmReset ? "Click again to reset" : "Reset device-only changes"}
         </button>
-        <p className="mt-2 text-xs text-neutral-600">
+        <p className="mt-2 text-xs text-ink-muted">
           This never changes your Google Sheet.
         </p>
       </GlassCard>

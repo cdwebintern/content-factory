@@ -61,15 +61,15 @@ export default function AddMeetingForm({ defaultLink = "", onAdd, onCancel }) {
     <form
       onSubmit={handleSubmit}
       onKeyDown={(e) => e.key === "Escape" && onCancel()}
-      className="space-y-3 rounded-2xl border border-white/80 bg-white/60 p-4"
+      className="space-y-3 rounded-2xl border border-white/80 bg-white/70 p-4 shadow-sm shadow-accent-ink/5"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">New meeting</h3>
+        <h3 className="text-sm font-semibold text-ink">New meeting</h3>
         <button
           type="button"
           onClick={onCancel}
           aria-label="Close form"
-          className={cn("rounded-full p-2 text-neutral-500 hover:bg-black/5", focusRing)}
+          className={cn("rounded-full p-2 text-ink-faint transition-colors hover:bg-accent-soft hover:text-accent-burnt", focusRing)}
         >
           <X className="h-4 w-4" />
         </button>
@@ -199,7 +199,7 @@ export default function AddMeetingForm({ defaultLink = "", onAdd, onCancel }) {
 
       <div>
         <span className={fieldLabel}>Priority</span>
-        <div className="grid grid-cols-3 gap-1 rounded-2xl bg-black/5 p-1 sm:rounded-full">
+        <div className="grid grid-cols-3 gap-1 rounded-2xl bg-accent-ink/5 p-1 sm:rounded-full">
           {MEETING_PRIORITIES.map((p) => (
             <button
               key={p}
@@ -207,11 +207,11 @@ export default function AddMeetingForm({ defaultLink = "", onAdd, onCancel }) {
               aria-pressed={priority === p}
               onClick={() => setPriority(p)}
               className={cn(
-                "rounded-full px-2 py-2 text-xs font-medium capitalize transition-colors",
+                "rounded-full px-2 py-2 text-xs font-medium capitalize transition-all duration-200",
                 focusRing,
                 priority === p
-                  ? "bg-neutral-900 text-white shadow-sm"
-                  : "text-neutral-600 hover:text-neutral-900"
+                  ? "bg-accent-strong text-white shadow-sm shadow-accent-ink/20"
+                  : "text-ink-muted hover:bg-accent-soft/70 hover:text-accent-ink"
               )}
             >
               {p}
@@ -231,7 +231,7 @@ export default function AddMeetingForm({ defaultLink = "", onAdd, onCancel }) {
           type="button"
           onClick={onCancel}
           className={cn(
-            "rounded-full border border-white/80 bg-white/70 px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-white",
+            "rounded-full border border-white/80 bg-white/70 px-4 py-2.5 text-sm font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white hover:text-accent-ink",
             focusRing
           )}
         >
@@ -240,7 +240,7 @@ export default function AddMeetingForm({ defaultLink = "", onAdd, onCancel }) {
         <button
           type="submit"
           className={cn(
-            "rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-700",
+            "hover-lift rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent",
             focusRing
           )}
         >

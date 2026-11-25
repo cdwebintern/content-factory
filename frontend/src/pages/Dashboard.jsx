@@ -125,20 +125,20 @@ export default function Dashboard() {
 
       <div className="min-w-0 flex-1">
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-neutral-900/10 bg-white/85 px-4 shadow-sm backdrop-blur-xl lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-accent-ink/10 bg-white/85 px-4 shadow-sm backdrop-blur-xl lg:hidden">
           <div className="flex items-center gap-3">
             <MobileNav active={activeNav} onSelect={handleNavSelect} tasksCount={stats.pending} />
             <div className="flex items-center gap-2">
-              <div className="grid h-8 w-8 place-items-center rounded-xl bg-neutral-900 font-bold text-lime-accent">
+              <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-honey font-bold text-white shadow-sm shadow-accent-strong/30">
                 C
               </div>
-              <span className="text-base font-semibold tracking-tight text-neutral-900">
-                Content Space
+              <span className="text-base font-semibold tracking-tight text-ink">
+                Content Factory
               </span>
             </div>
           </div>
 
-          <span className="rounded-full bg-lime-accent px-3 py-1 text-xs font-semibold text-neutral-900">
+          <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white shadow-sm shadow-accent-strong/25">
             {stats.pending} {stats.pending === 1 ? "task" : "tasks"}
           </span>
         </header>
@@ -147,14 +147,14 @@ export default function Dashboard() {
           {notice && (
             <div
               role="status"
-              className="flex animate-in items-center justify-between gap-3 rounded-2xl border border-neutral-300 bg-lime-accent/30 px-4 py-3 text-sm text-neutral-900 backdrop-blur-xl fade-in"
+              className="flex animate-in items-center justify-between gap-3 rounded-2xl border border-accent-tint bg-accent-soft/70 px-4 py-3 text-sm text-accent-dark backdrop-blur-xl fade-in"
             >
               <span>{notice}</span>
               <button
                 type="button"
                 onClick={() => setNotice(null)}
                 aria-label="Dismiss"
-                className="rounded p-1 hover:bg-lime-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
+                className="rounded p-1 transition-colors hover:bg-accent-mist/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong"
               >
                 <X className="h-4 w-4" />
               </button>

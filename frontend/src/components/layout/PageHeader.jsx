@@ -10,15 +10,15 @@ export default function PageHeader({ title, description, action, backTo = "/", b
         <Link
           to={backTo}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/70 px-3.5 py-2 text-xs font-medium text-neutral-700 backdrop-blur-md transition-colors hover:bg-white",
+            "hover-lift inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/70 px-3.5 py-2 text-xs font-medium text-ink-soft backdrop-blur-md hover:border-accent-mist hover:bg-white hover:text-accent-burnt",
             focusRing
           )}
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           {backLabel}
         </Link>
-        <h1 className="text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl">{title}</h1>
-        {description && <p className="max-w-2xl text-sm text-neutral-600">{description}</p>}
+        <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{title}</h1>
+        {description && <p className="max-w-2xl text-sm text-ink-muted">{description}</p>}
       </div>
       {action}
     </header>

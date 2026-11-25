@@ -20,7 +20,7 @@ export default function SaveStatus() {
           "pointer-events-auto flex max-w-md items-center gap-2.5 rounded-2xl border px-4 py-2.5 text-sm font-medium shadow-lg backdrop-blur-xl",
           error && saving === 0
             ? "border-red-200 bg-red-50/95 text-red-900"
-            : "border-white/80 bg-white/90 text-neutral-900"
+            : "border-white/80 bg-white/90 text-ink"
         )}
       >
         {saving > 0 ? (
@@ -45,7 +45,7 @@ export default function SaveStatus() {
           </>
         ) : (
           <>
-            <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+            <Check className="h-4 w-4 shrink-0 text-accent-strong" />
             <span>Saved to Google Sheets</span>
           </>
         )}

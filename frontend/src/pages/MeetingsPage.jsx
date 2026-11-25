@@ -116,7 +116,7 @@ export default function MeetingsPage() {
         type="button"
         onClick={() => setAdding(true)}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700",
+          "hover-lift inline-flex items-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
           focusRing
         )}
       >
@@ -141,14 +141,14 @@ export default function MeetingsPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <StatTile label="Total meetings" value={meetings.length} />
-        <StatTile label="Today" value={count("today")} accent={count("today") > 0 ? "lime" : "neutral"} />
+        <StatTile label="Today" value={count("today")} accent={count("today") > 0 ? "accent" : "neutral"} />
         <StatTile label="Upcoming" value={count("upcoming")} />
         <StatTile label="Completed" value={count("completed")} />
         <StatTile label="Cancelled" value={count("cancelled")} accent={count("cancelled") > 0 ? "red" : "neutral"} />
       </div>
 
       <GlassCard
-        tone="sky"
+        tone="warm"
         icon={Video}
         title="All meetings"
         description={`Showing ${visible.length} of ${meetings.length}`}
@@ -188,14 +188,14 @@ export default function MeetingsPage() {
             <button
               type="button"
               onClick={clearFilters}
-              className={cn("rounded-full text-xs font-medium text-neutral-700 underline", focusRing)}
+              className={cn("rounded-full text-xs font-medium text-accent-burnt underline decoration-accent-tint underline-offset-2 transition-colors hover:text-accent-dark", focusRing)}
             >
               Clear search and filters
             </button>
           )}
 
           {groups.length === 0 ? (
-            <p className="py-10 text-center text-sm text-neutral-600">
+            <p className="py-10 text-center text-sm text-ink-muted">
               {meetingsStatus === "error"
                 ? "Meetings couldn't be loaded. See the message at the top of the page."
                 : hasFilters
@@ -207,8 +207,8 @@ export default function MeetingsPage() {
               {groups.map((g) => (
                 <section key={g.label} className="space-y-3">
                   <div className="flex items-baseline gap-2">
-                    <h3 className="text-sm font-semibold text-neutral-900">{g.label}</h3>
-                    <span className="text-xs text-neutral-500">
+                    <h3 className="text-sm font-semibold text-ink">{g.label}</h3>
+                    <span className="text-xs text-ink-faint">
                       {g.items.length} {g.items.length === 1 ? "meeting" : "meetings"}
                     </span>
                   </div>

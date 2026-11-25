@@ -14,7 +14,7 @@ function formatAgo(date, now) {
 const latest = (dates) => dates.filter(Boolean).reduce((a, b) => (a > b ? a : b), null)
 
 const actionBtn =
-  "inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-900 transition-colors hover:bg-white disabled:opacity-60"
+  "inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white hover:text-accent-ink disabled:opacity-60"
 
 // sources: [{ label, status, error, lastSynced, skipped }, ...]
 export default function SyncBar({ sources, refreshing, onRefresh }) {
@@ -28,7 +28,7 @@ export default function SyncBar({ sources, refreshing, onRefresh }) {
     return (
       <div
         role="status"
-        className="flex items-start gap-2 rounded-2xl border border-neutral-300 bg-lime-accent/30 px-4 py-3 text-sm text-neutral-900 backdrop-blur-xl"
+        className="flex items-start gap-2 rounded-2xl border border-accent-tint bg-accent-soft/70 px-4 py-3 text-sm text-accent-dark backdrop-blur-xl"
       >
         <Info className="mt-0.5 h-4 w-4 shrink-0" />
         <p>
@@ -70,9 +70,9 @@ export default function SyncBar({ sources, refreshing, onRefresh }) {
   const withSkipped = sources.filter((s) => s.skipped.length > 0)
 
   return (
-    <div className="space-y-2 rounded-2xl border border-white/80 bg-white/60 px-4 py-2.5 text-sm backdrop-blur-xl">
+    <div className="space-y-2 rounded-2xl border border-white/80 bg-white/60 px-4 py-2.5 text-sm text-ink-soft backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <span className="inline-flex items-center gap-2 text-neutral-700">
+        <span className="inline-flex items-center gap-2 text-ink-soft">
           <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden />
                    Synced from Google Sheets · {sources.map((s) => `${s.items.length} ${s.label.toLowerCase()}`).join(" · ")}
           {lastSynced ? ` · updated ${formatAgo(lastSynced, now)}` : ""}
@@ -84,13 +84,13 @@ export default function SyncBar({ sources, refreshing, onRefresh }) {
       </div>
 
       {refreshErrors.map((s) => (
-        <p key={s.label} role="status" className="text-xs text-amber-700">
+        <p key={s.label} role="status" className="text-xs text-accent-deep">
           Couldn't refresh {s.label} ({s.error}). Showing the last synced data.
         </p>
       ))}
 
       {withSkipped.map((s) => (
-        <details key={s.label} className="text-xs text-amber-800">
+        <details key={s.label} className="text-xs text-accent-burnt">
           <summary className="cursor-pointer font-medium">
             {s.label}: {s.skipped.length} {s.skipped.length === 1 ? "row was" : "rows were"} skipped
           </summary>

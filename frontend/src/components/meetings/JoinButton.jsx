@@ -11,7 +11,7 @@ export default function JoinButton({ href, size = "sm", className }) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+        "hover-lift inline-flex items-center justify-center gap-2 rounded-lg bg-accent-strong font-medium text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-2",
         large ? "w-full px-4 py-3 text-sm" : "px-4 py-2 text-xs",
         className
       )}

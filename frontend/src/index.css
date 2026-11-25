@@ -37,24 +37,83 @@
   }
 }
 
-/* ===== Iridescent glass theme ===== */
+/* ===== Content Factory palette =====
+   Every warm color on the site comes from this block.
+   Change a value here and the whole theme follows.
+   Red / emerald are intentionally NOT here: they only mark
+   semantic states (overdue, error, online, completed). */
 @theme {
-  --color-lime-accent: #e9ff6f;
+  /* Accent ramp: pale washes -> vivid orange -> deep brown */
+  --color-accent-wash: #fff7ed; /* page + section wash */
+  --color-accent-soft: #ffedd5; /* soft chips, hovers */
+  --color-accent-mist: #fed7aa; /* card tints */
+  --color-accent-tint: #fdba74; /* borders, decorations */
+  --color-accent-light: #fb923c; /* light accent text/icons */
+  --color-accent: #f97316; /* primary accent */
+  --color-accent-strong: #ea580c; /* primary buttons, rings */
+  --color-accent-deep: #c2410c; /* pressed / emphasis */
+  --color-accent-burnt: #9a3412; /* deep tint text */
+  --color-accent-ink: #7c2d12; /* headings on tint, shadows */
+  --color-accent-dark: #431407; /* strongest tint text */
+  --color-accent-honey: #f59e0b; /* gradient partner for accent */
+
+  /* Warm neutrals for text and hairlines */
+  --color-ink: #1c1917; /* primary text */
+  --color-ink-deep: #292524;
+  --color-ink-soft: #44403c;
+  --color-ink-muted: #57534e; /* body text */
+  --color-ink-faint: #78716c; /* labels, meta */
+  --color-ink-subtle: #a8a29e; /* disabled, dots */
+
+  /* Surfaces */
+  --color-surface: #fff8f1; /* page background */
+
+  /* Shared glass elevation */
+  --shadow-glass: 0 12px 40px -14px rgb(124 45 18 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.85);
 }
 
 :root {
   --radius: 1.5rem;
-  --background: #ffffff;
-  --foreground: #111214;
-  --card: rgb(255 255 255 / 0.62);
-  --card-foreground: #111214;
-  --primary: #121212;
+  --background: var(--color-surface);
+  --foreground: var(--color-ink);
+  --card: rgb(255 255 255 / 0.68);
+  --card-foreground: var(--color-ink);
+  --primary: var(--color-accent-strong);
   --primary-foreground: #ffffff;
-  --border: rgb(17 18 20 / 0.08);
-  --input: rgb(17 18 20 / 0.12);
-  --ring: #121212;
+  --border: #78350f1a;
+  --input: #78350f24;
+  --ring: var(--color-accent-strong);
 }
 
 body {
   font-family: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+/* Soft lift used by buttons and interactive chips */
+.hover-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-lift:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift,
+  .hover-lift:hover,
+  .hover-lift:active {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    transform: none;
+  }
 }

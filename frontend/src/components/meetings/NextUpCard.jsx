@@ -8,7 +8,7 @@ export default function NextUpCard({ meeting }) {
   const startsText = live ? "In progress" : `Starts ${untilLabel(meeting.start)}`
 
   return (
-    <div className="flex h-full min-w-0 flex-col gap-4 rounded-3xl bg-neutral-900 p-4 text-white shadow-lg sm:p-5">
+    <div className="flex h-full min-w-0 flex-col gap-4 rounded-3xl bg-gradient-to-br from-ink via-ink to-accent-dark p-4 text-white shadow-lg shadow-accent-ink/20 ring-1 ring-accent/20 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Pulsing badge: a ping circle layered behind a solid dot */}
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white">
@@ -18,12 +18,12 @@ export default function NextUpCard({ meeting }) {
           </span>
           {live ? "LIVE NOW" : "NEXT UP"}
         </span>
-        <span className="text-xs font-medium text-lime-accent">{startsText}</span>
+        <span className="text-xs font-medium text-accent-tint">{startsText}</span>
       </div>
 
       <div className="min-w-0 space-y-1">
         <p className="text-sm font-medium text-white/70">{dayLabel(meeting.start)}</p>
-        <p className="text-4xl font-light tracking-tight text-lime-accent">
+        <p className="text-4xl font-light tracking-tight text-accent-tint">
           {formatTime(meeting.start)}
         </p>
         <h3 className="wrap-break-word text-base font-medium leading-snug">{meeting.title}</h3>

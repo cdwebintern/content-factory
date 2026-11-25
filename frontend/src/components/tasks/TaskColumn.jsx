@@ -80,7 +80,7 @@ export default function TaskColumn({
               type="button"
               onClick={() => setAdding(true)}
               className={cn(
-                "flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-neutral-400 bg-white/40 py-2.5 text-sm font-medium text-neutral-800 transition-colors hover:bg-white/70",
+                "flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-accent-light/70 bg-white/40 py-2.5 text-sm font-medium text-ink-deep transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent-wash hover:text-accent-ink",
                 focusRing
               )}
             >
@@ -90,7 +90,7 @@ export default function TaskColumn({
           )
         ) : (
           !loadError && (
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-ink-faint">
               Tasks come from your Google Sheet. Ticks and priority changes made here stay on
               this device.
             </p>
@@ -116,11 +116,11 @@ export default function TaskColumn({
                 aria-selected={active}
                 onClick={() => setFilter(tab.id)}
                 className={cn(
-                  "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
+                  "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200",
                   focusRing,
                   active
-                    ? "border-neutral-900 bg-neutral-900 text-white"
-                    : "border-white/80 bg-white/60 text-neutral-600 hover:bg-white",
+                    ? "border-accent-strong bg-accent-strong text-white shadow-sm shadow-accent-ink/15"
+                    : "border-white/80 bg-white/60 text-ink-muted hover:-translate-y-0.5 hover:border-accent-mist hover:bg-accent-wash hover:text-accent-ink",
                   alert && "border-red-200 text-red-600"
                 )}
               >
@@ -129,7 +129,7 @@ export default function TaskColumn({
                   className={cn(
                     "rounded-full px-1.5 text-[11px]",
                     active
-                      ? "bg-lime-accent text-neutral-900"
+                      ? "bg-accent-soft text-accent-ink"
                       : alert
                         ? "bg-red-50"
                         : "bg-black/5"
@@ -143,7 +143,7 @@ export default function TaskColumn({
         </div>
 
         {visible.length === 0 ? (
-          <p className="grid flex-1 place-items-center py-10 text-center text-sm text-neutral-500">
+          <p className="grid flex-1 place-items-center py-10 text-center text-sm text-ink-faint">
             {loadError
               ? "Tasks couldn't be loaded. See the message at the top of the page."
               : EMPTY_MESSAGES[filter]}

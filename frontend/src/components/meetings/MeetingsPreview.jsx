@@ -20,7 +20,7 @@ export default function MeetingsPreview({ meetings, loadError = false }) {
 
   return (
     <GlassCard
-      tone="sky"
+      tone="warm"
       icon={Video}
       title="Upcoming meetings"
       description={upcoming.length === 0 ? "Nothing coming up" : `${upcoming.length} upcoming`}
@@ -32,7 +32,7 @@ export default function MeetingsPreview({ meetings, loadError = false }) {
 
           <div className="min-w-0 space-y-3">
             {shown.length === 0 ? (
-              <p className="rounded-2xl border border-white/80 bg-white/60 p-4 text-sm text-neutral-600">
+              <p className="rounded-2xl border border-white/80 bg-white/60 p-4 text-sm text-ink-muted">
                 No other meetings coming up.
               </p>
             ) : (
@@ -43,14 +43,14 @@ export default function MeetingsPreview({ meetings, loadError = false }) {
               </ul>
             )}
             {later.length > LIST_LIMIT && (
-              <p className="text-xs text-neutral-600">
+              <p className="text-xs text-ink-muted">
                 +{later.length - LIST_LIMIT} more upcoming
               </p>
             )}
           </div>
         </div>
       ) : (
-        <p className="py-10 text-center text-sm text-neutral-600">
+        <p className="py-10 text-center text-sm text-ink-muted">
           {loadError
             ? "Meetings couldn't be loaded. See the message at the top of the page."
             : "No upcoming meetings 🎉"}

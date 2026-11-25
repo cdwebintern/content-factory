@@ -3,17 +3,17 @@ import { CheckSquare, Video } from "lucide-react"
 // Compact live pill. All numbers are passed in (derived in Dashboard).
 export default function StatsStrip({ pending, meetingsToday, overdue }) {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-white/80 bg-white/70 px-4 py-2 text-sm text-neutral-900 backdrop-blur-md sm:rounded-full">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-white/80 bg-white/70 px-4 py-2 text-sm text-ink backdrop-blur-md sm:rounded-full">
       <span className="inline-flex items-center gap-1.5">
         <CheckSquare className="h-4 w-4" />
         <b>{pending}</b>
-        <span className="text-neutral-500">Tasks</span>
+        <span className="text-ink-faint">Tasks</span>
       </span>
 
       <span className="inline-flex items-center gap-1.5">
-        <Video className="h-4 w-4 text-blue-600" />
+        <Video className="h-4 w-4 text-accent" />
         <b>{meetingsToday}</b>
-        <span className="text-neutral-500">Meetings today</span>
+        <span className="text-ink-faint">Meetings today</span>
       </span>
 
       {/* Only shows when something is overdue */}

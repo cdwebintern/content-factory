@@ -2,13 +2,14 @@ import { glass } from "@/lib/glass"
 import { cn } from "@/lib/utils"
 
 // Each tone is a soft tint over the glass, so cards are easy to tell apart
-// but still belong to the same pastel palette as the page background.
+// but still belong to the same warm palette as the page background.
+// Keys are intensity names, values come from the tokens in index.css.
 const TONES = {
-  neutral: { card: "", chip: "bg-neutral-900 text-lime-accent" },
-  lime: { card: "from-lime-accent/45 via-white/55 to-white/45", chip: "bg-neutral-900 text-lime-accent" },
-  sky: { card: "from-sky-200/60 via-white/55 to-white/45", chip: "bg-neutral-900 text-sky-300" },
-  violet: { card: "from-violet-200/60 via-white/55 to-white/45", chip: "bg-neutral-900 text-violet-300" },
-  peach: { card: "from-orange-200/60 via-white/55 to-white/45", chip: "bg-neutral-900 text-orange-300" },
+  neutral: { card: "", chip: "bg-ink text-accent-mist" },
+  soft: { card: "from-accent-soft/80 via-white/55 to-white/45", chip: "bg-ink text-accent-mist" },
+  warm: { card: "from-accent-soft/75 via-white/55 to-white/45", chip: "bg-accent-honey text-white" },
+  tint: { card: "from-accent-tint/55 via-white/55 to-white/45", chip: "bg-accent-strong text-white" },
+  deep: { card: "from-accent-mist/60 via-white/55 to-white/45", chip: "bg-accent-strong text-white" },
 }
 
 // "@container" lets everything inside size itself by the card's width (@lg:, @3xl:...)
@@ -42,11 +43,11 @@ export default function GlassCard({
             )}
             <div className="min-w-0">
               {title && (
-                <h2 className="text-lg font-semibold leading-tight tracking-tight text-neutral-900">
+                                  <h2 className="text-lg font-semibold leading-tight tracking-tight text-ink">
                   {title}
                 </h2>
               )}
-              {description && <div className="text-sm text-neutral-600">{description}</div>}
+              {description && <div className="text-sm text-ink-muted">{description}</div>}
             </div>
           </div>
           {action}

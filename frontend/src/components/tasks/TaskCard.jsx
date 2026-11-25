@@ -11,17 +11,17 @@ import { cn } from "@/lib/utils"
 import PriorityPill from "./PriorityPill"
 
 const toneStyles = {
-  today: "font-medium text-orange-600",
+  today: "font-medium text-accent-strong",
   overdue: "font-medium text-red-600",
-  soon: "text-amber-600",
-  later: "text-neutral-500",
+  soon: "text-accent-strong",
+  later: "text-ink-faint",
 }
 
 function statusChip(task, due) {
   if (task.done) return { text: "Done", className: "bg-emerald-100 text-emerald-800" }
   if (due.tone === "overdue") return { text: "Overdue", className: "bg-red-100 text-red-700" }
-  if (due.tone === "today") return { text: "Due today", className: "bg-orange-100 text-orange-800" }
-  return { text: "Upcoming", className: "bg-black/5 text-neutral-600" }
+  if (due.tone === "today") return { text: "Due today", className: "bg-accent-soft text-accent-burnt" }
+  return { text: "Upcoming", className: "bg-accent-ink/5 text-ink-muted" }
 }
 
 export default function TaskCard({
@@ -78,14 +78,14 @@ export default function TaskCard({
       id={`task-${task.id}`}
       className={cn(
         tile,
-        "flex min-w-0 flex-col gap-3 border-2 border-neutral-900/25 p-3.5 transition-colors hover:bg-white/90",
+        "flex min-w-0 flex-col gap-3 border-2 border-accent-ink/15 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint/70 hover:bg-white/90 hover:shadow-md hover:shadow-accent-ink/10",
         task.done && "bg-white/40",
-        highlight && "ring-2 ring-neutral-900"
+        highlight && "ring-2 ring-accent-strong"
       )}
     >
       <div className="flex items-start gap-3">
         <Checkbox
-          className="mt-0.5 h-5 w-5 shrink-0 border-neutral-400 data-checked:border-neutral-900 data-checked:bg-neutral-900 data-checked:text-white data-[state=checked]:border-neutral-900 data-[state=checked]:bg-neutral-900 data-[state=checked]:text-white"
+          className="mt-0.5 h-5 w-5 shrink-0 border-accent-light data-checked:border-accent-strong data-checked:bg-accent-strong data-checked:text-white data-[state=checked]:border-accent-strong data-[state=checked]:bg-accent-strong data-[state=checked]:text-white"
           checked={task.done}
           onCheckedChange={onToggle}
           aria-label={`Mark "${task.title}" as ${task.done ? "not done" : "done"}`}
@@ -108,20 +108,20 @@ export default function TaskCard({
               }
             }}
             onBlur={() => finishEditing(true)}
-            className="min-w-0 flex-1 rounded-lg border border-neutral-900/20 bg-white px-2 py-1 text-base text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 sm:text-sm"
+            className="min-w-0 flex-1 rounded-lg border border-accent-ink/20 bg-white px-2 py-1 text-base text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong sm:text-sm"
           />
         ) : (
           <>
             <p
               className={cn(
-                "min-w-0 flex-1 wrap-break-word text-sm font-medium leading-snug text-neutral-900",
-                task.done && "text-neutral-500 line-through"
+                "min-w-0 flex-1 wrap-break-word text-sm font-medium leading-snug text-ink",
+                task.done && "text-ink-faint line-through"
               )}
             >
               {task.title}
             </p>
             {/* {detailed && (
-              <span className="shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[11px] text-neutral-500">
+              <span className="shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[11px] text-ink-faint">
                 {task.id}
               </span>
             )} */}
@@ -131,7 +131,7 @@ export default function TaskCard({
                 onClick={startEditing}
                 aria-label={`Edit title of "${task.title}"`}
                 className={cn(
-                  "shrink-0 rounded-full p-2 text-neutral-400 transition-colors hover:bg-black/5 hover:text-neutral-800",
+                  "shrink-0 rounded-full p-2 text-ink-subtle transition-colors hover:bg-accent-soft hover:text-accent-burnt",
                   focusRing
                 )}
               >
@@ -144,7 +144,7 @@ export default function TaskCard({
 
       {/* pl-8 lines this row up under the title (checkbox 20px + gap 12px) */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pl-8">
-        <span className="rounded-full bg-lime-accent/70 px-2.5 py-0.5 text-xs font-medium text-neutral-800">
+        <span className="rounded-full bg-accent-soft/90 px-2.5 py-0.5 text-xs font-medium text-accent-ink">
           {task.service}
         </span>
 
@@ -160,11 +160,11 @@ export default function TaskCard({
                   max="2100-12-31"
                   onChange={(e) => handleDateChange(e.target.value)}
                   onBlur={() => setDateDraft(null)}
-                  className="min-w-0 rounded-lg border border-white/80 bg-white/80 px-2 py-1 text-base text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 sm:text-xs"
+                  className="min-w-0 rounded-lg border border-white/80 bg-white/80 px-2 py-1 text-base text-ink-deep transition-colors hover:border-accent-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong sm:text-xs"
                 />
               </label>
             ) : (
-              <span className="text-xs text-neutral-600">{formatFullDate(task.due)}</span>
+              <span className="text-xs text-ink-muted">{formatFullDate(task.due)}</span>
             )}
             <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", status.className)}>
               {status.text}
@@ -181,21 +181,21 @@ export default function TaskCard({
         )}
       </div>
 
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-2.5">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-accent-ink/5 pt-2.5">
         <div className="flex min-w-0 items-center gap-2">
           <Avatar className="h-7 w-7 shrink-0" title={task.assignee?.name}>
             <AvatarImage src={task.assignee?.avatar} alt={task.assignee?.name} />
-            <AvatarFallback className="bg-neutral-900 text-[10px] text-lime-accent">
+            <AvatarFallback className="bg-ink text-[10px] text-accent-mist">
               {task.assignee ? getInitials(task.assignee.name) : "?"}
             </AvatarFallback>
           </Avatar>
           {detailed && (
             <div className="min-w-0 leading-tight">
-              <p className="truncate text-xs font-medium text-neutral-800">
+              <p className="truncate text-xs font-medium text-ink-deep">
                 {task.assignee?.name ?? "Unassigned"}
               </p>
               {task.assignee && (
-                <p className="truncate text-[11px] text-neutral-500">{task.assignee.role}</p>
+                <p className="truncate text-[11px] text-ink-faint">{task.assignee.role}</p>
               )}
             </div>
           )}
@@ -216,7 +216,7 @@ export default function TaskCard({
                 focusRing,
                 confirming
                   ? "bg-red-500 px-3 text-white hover:bg-red-600"
-                  : "text-neutral-400 hover:bg-black/5 hover:text-red-600"
+                  : "text-ink-subtle hover:bg-red-50 hover:text-red-600"
               )}
             >
               <Trash2 className="h-4 w-4" />

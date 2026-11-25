@@ -101,7 +101,7 @@ export default function TasksPage() {
         type="button"
         onClick={() => setAdding(true)}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700",
+          "hover-lift inline-flex items-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
           focusRing
         )}
       >
@@ -127,14 +127,14 @@ export default function TasksPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
         <StatTile label="Total tasks" value={stats.total} />
         <StatTile label="Pending" value={stats.pending} />
-        <StatTile label="Due today" value={stats.today} accent={stats.today > 0 ? "lime" : "neutral"} />
+        <StatTile label="Due today" value={stats.today} accent={stats.today > 0 ? "accent" : "neutral"} />
         <StatTile label="Overdue" value={stats.overdue} accent={stats.overdue > 0 ? "red" : "neutral"} />
         <StatTile label="High priority" value={stats.high} />
         <StatTile label="Done" value={stats.done} />
       </div>
 
       <GlassCard
-        tone="lime"
+        tone="deep"
         icon={CheckSquare}
         title="All tasks"
         description={`Showing ${visible.length} of ${tasks.length}`}
@@ -195,14 +195,14 @@ export default function TasksPage() {
             <button
               type="button"
               onClick={clearFilters}
-              className={cn("rounded-full text-xs font-medium text-neutral-700 underline", focusRing)}
+              className={cn("rounded-full text-xs font-medium text-accent-burnt underline decoration-accent-tint underline-offset-2 transition-colors hover:text-accent-dark", focusRing)}
             >
               Clear search and filters
             </button>
           )}
 
           {visible.length === 0 ? (
-            <p className="py-10 text-center text-sm text-neutral-600">
+            <p className="py-10 text-center text-sm text-ink-muted">
               {tasksStatus === "error"
                 ? "Tasks couldn't be loaded. See the message at the top of the page."
                 : hasFilters

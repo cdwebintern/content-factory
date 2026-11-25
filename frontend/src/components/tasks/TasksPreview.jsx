@@ -13,7 +13,7 @@ export default function TasksPreview({ tasks, onToggle, onCyclePriority, loadErr
 
   return (
     <GlassCard
-      tone="lime"
+      tone="deep"
       icon={CheckSquare}
       title="Tasks & priority"
       description={
@@ -27,7 +27,7 @@ export default function TasksPreview({ tasks, onToggle, onCyclePriority, loadErr
       action={<ViewAllLink to="/tasks">View all tasks</ViewAllLink>}
     >
       {shown.length === 0 ? (
-        <p className="py-10 text-center text-sm text-neutral-600">
+        <p className="py-10 text-center text-sm text-ink-muted">
           {loadError
             ? "Tasks couldn't be loaded. See the message at the top of the page."
             : "Nothing pending. You're all caught up 🎉"}
@@ -46,7 +46,7 @@ export default function TasksPreview({ tasks, onToggle, onCyclePriority, loadErr
             ))}
           </ul>
           {stats.pending > shown.length && (
-            <p className="mt-3 text-xs text-neutral-600">
+            <p className="mt-3 text-xs text-ink-muted">
               Showing the {shown.length} most urgent of {stats.pending} pending tasks.
             </p>
           )}
