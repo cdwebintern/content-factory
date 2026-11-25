@@ -25,7 +25,7 @@ export default function TeamRoster({ members, currentUserId }) {
               </Avatar>
               {/* Status dot on the avatar's corner */}
               <span
-                className={`absolute bottom-0 right-0 h-3 w-3 rounded-full ring-2 ring-white ${s.dot}`}
+                className={`absolute bottom-0 right-0 h-3 w-3 rounded-full ring-2 ring-glass ${s.dot}`}
                 aria-hidden
               />
             </div>

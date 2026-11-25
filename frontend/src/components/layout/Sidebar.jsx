@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { navGroups, serviceTags } from "@/data/nav"
 import { currentUser, getInitials } from "@/data/team"
 import { cn } from "@/lib/utils"
+import ThemeToggle from "./ThemeToggle"
 
 // Shared by the desktop sidebar AND the mobile sheet
 export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
@@ -13,10 +14,13 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-accent-ink/5 px-5">
-        <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-honey font-bold text-white shadow-sm shadow-accent-strong/30">
+        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-honey font-bold text-white shadow-sm shadow-accent-strong/30">
           C
         </div>
-        <span className="text-lg font-semibold tracking-tight text-ink">Content Factory</span>
+        <span className="min-w-0 flex-1 truncate text-lg font-semibold tracking-tight text-ink">
+          Content Factory
+        </span>
+        <ThemeToggle />
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
@@ -41,7 +45,12 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
                             : "text-ink-soft hover:translate-x-0.5 hover:bg-accent-soft/70 hover:text-accent-ink"
                         )}
                       >
-                        <Icon className={cn("h-4 w-4", isActive ? "text-white" : "text-accent-strong/80")} />
+                        <Icon
+                          className={cn(
+                            "h-4 w-4",
+                            isActive ? "text-white" : group.accent === "green" ? "text-green" : "text-accent-strong/80"
+                          )}
+                        />
                         <span className="flex-1 text-left">{item.label}</span>
                         {item.id === "tasks" && tasksCount > 0 && (
                           <Badge className="h-5 min-w-5 justify-center bg-accent px-1.5 text-[11px] text-white hover:bg-accent">
@@ -63,7 +72,7 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
                 <Badge
                   key={tag}
                   variant="outline"
-                  className="cursor-pointer border-black/10 bg-white/60 font-normal transition-colors hover:border-accent-tint hover:bg-accent-soft hover:text-accent-ink"
+                  className="cursor-pointer border-glass-line bg-glass/60 font-normal transition-colors hover:border-accent-tint hover:bg-accent-soft hover:text-accent-ink"
                 >
                   {tag}
                 </Badge>
@@ -99,13 +108,13 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
             "flex w-full items-center gap-3 rounded-2xl border p-2.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong",
             profileActive
               ? "border-accent-strong bg-gradient-to-r from-accent-strong to-accent-honey text-white shadow-sm shadow-accent-strong/25"
-              : "border-white/80 bg-white/60 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white"
+              : "border-glass-line bg-glass/60 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass"
           )}
         >
           <span
             className={cn(
               "grid h-9 w-9 shrink-0 place-items-center rounded-full text-xs font-semibold",
-              profileActive ? "bg-white text-accent-deep" : "bg-ink text-accent-mist"
+              profileActive ? "bg-glass text-accent-deep" : "bg-ink text-accent-mist"
             )}
           >
             {getInitials(currentUser.name)}
@@ -128,7 +137,7 @@ export default function Sidebar({ className, ...props }) {
   return (
     <aside
       className={cn(
-        "sticky top-0 h-screen w-64 shrink-0 border-r border-white/70 bg-white/50 backdrop-blur-xl",
+        "sticky top-0 h-screen w-64 shrink-0 border-r border-glass-line bg-glass/50 backdrop-blur-xl",
         className
       )}
     >

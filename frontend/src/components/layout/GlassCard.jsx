@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils"
 // Keys are intensity names, values come from the tokens in index.css.
 const TONES = {
   neutral: { card: "", chip: "bg-ink text-accent-mist" },
-  soft: { card: "from-accent-soft/80 via-white/55 to-white/45", chip: "bg-ink text-accent-mist" },
-  warm: { card: "from-accent-soft/75 via-white/55 to-white/45", chip: "bg-accent-honey text-white" },
-  tint: { card: "from-accent-tint/55 via-white/55 to-white/45", chip: "bg-accent-strong text-white" },
-  deep: { card: "from-accent-mist/60 via-white/55 to-white/45", chip: "bg-accent-strong text-white" },
+  soft: { card: "from-accent-soft/80 via-glass/55 to-glass/45", chip: "bg-ink text-accent-mist" },
+  warm: { card: "from-accent-soft/75 via-glass/55 to-glass/45", chip: "bg-accent-honey text-white" },
+  tint: { card: "from-accent-tint/55 via-glass/55 to-glass/45", chip: "bg-accent-strong text-white" },
+  deep: { card: "from-accent-mist/60 via-glass/55 to-glass/45", chip: "bg-accent-strong text-white" },
 }
 
 // "@container" lets everything inside size itself by the card's width (@lg:, @3xl:...)

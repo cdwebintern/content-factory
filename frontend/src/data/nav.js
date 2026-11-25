@@ -16,6 +16,7 @@ export const navGroups = [
   },
   {
     title: "AI & Automation",
+    accent: "green", // secondary hue, keeps the AI tools distinct from the orange workflow items
     items: [
       { id: "ai-workforce", label: "AI Workforce", icon: Bot },
       { id: "automations", label: "Automations", icon: Zap },

@@ -4,7 +4,7 @@ function Block({ className }) {
   return (
     <div
       className={cn(
-        "animate-pulse rounded-[1.75rem] border border-white/70 bg-white/50 motion-reduce:animate-none",
+        "animate-pulse rounded-[1.75rem] border border-glass-line bg-glass/50 motion-reduce:animate-none",
         className
       )}
     />

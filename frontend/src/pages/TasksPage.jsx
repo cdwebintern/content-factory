@@ -101,7 +101,7 @@ export default function TasksPage() {
         type="button"
         onClick={() => setAdding(true)}
         className={cn(
-          "hover-lift inline-flex items-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
+          "hover-lift inline-flex items-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent hover:shadow-md",
           focusRing
         )}
       >
@@ -126,11 +126,11 @@ export default function TasksPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
         <StatTile label="Total tasks" value={stats.total} />
-        <StatTile label="Pending" value={stats.pending} />
+        <StatTile label="Pending" value={stats.pending} accent={stats.pending > 0 ? "green-soft" : "neutral"} />
         <StatTile label="Due today" value={stats.today} accent={stats.today > 0 ? "accent" : "neutral"} />
         <StatTile label="Overdue" value={stats.overdue} accent={stats.overdue > 0 ? "red" : "neutral"} />
-        <StatTile label="High priority" value={stats.high} />
-        <StatTile label="Done" value={stats.done} />
+        <StatTile label="High priority" value={stats.high} accent={stats.high > 0 ? "green" : "neutral"} />
+        <StatTile label="Done" value={stats.done} accent={stats.done > 0 ? "ok" : "neutral"} />
       </div>
 
       <GlassCard

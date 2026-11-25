@@ -12,14 +12,14 @@ import PriorityPill from "./PriorityPill"
 
 const toneStyles = {
   today: "font-medium text-accent-strong",
-  overdue: "font-medium text-red-600",
+  overdue: "font-medium text-danger",
   soon: "text-accent-strong",
   later: "text-ink-faint",
 }
 
 function statusChip(task, due) {
-  if (task.done) return { text: "Done", className: "bg-emerald-100 text-emerald-800" }
-  if (due.tone === "overdue") return { text: "Overdue", className: "bg-red-100 text-red-700" }
+  if (task.done) return { text: "Done", className: "bg-ok-soft text-ok" }
+  if (due.tone === "overdue") return { text: "Overdue", className: "bg-danger-soft text-danger" }
   if (due.tone === "today") return { text: "Due today", className: "bg-accent-soft text-accent-burnt" }
   return { text: "Upcoming", className: "bg-accent-ink/5 text-ink-muted" }
 }
@@ -78,8 +78,8 @@ export default function TaskCard({
       id={`task-${task.id}`}
       className={cn(
         tile,
-        "flex min-w-0 flex-col gap-3 border-2 border-accent-ink/15 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint/70 hover:bg-white/90 hover:shadow-md hover:shadow-accent-ink/10",
-        task.done && "bg-white/40",
+        "flex min-w-0 flex-col gap-3 border-2 border-accent-ink/15 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint/70 hover:bg-glass/90 hover:shadow-md hover:shadow-shade/10",
+        task.done && "bg-glass/40",
         highlight && "ring-2 ring-accent-strong"
       )}
     >
@@ -108,7 +108,7 @@ export default function TaskCard({
               }
             }}
             onBlur={() => finishEditing(true)}
-            className="min-w-0 flex-1 rounded-lg border border-accent-ink/20 bg-white px-2 py-1 text-base text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong sm:text-sm"
+            className="min-w-0 flex-1 rounded-lg border border-accent-ink/20 bg-glass px-2 py-1 text-base text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong sm:text-sm"
           />
         ) : (
           <>
@@ -121,7 +121,7 @@ export default function TaskCard({
               {task.title}
             </p>
             {/* {detailed && (
-              <span className="shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 font-mono text-[11px] text-ink-faint">
+              <span className="shrink-0 rounded-md bg-ink/5 px-1.5 py-0.5 font-mono text-[11px] text-ink-faint">
                 {task.id}
               </span>
             )} */}
@@ -160,7 +160,7 @@ export default function TaskCard({
                   max="2100-12-31"
                   onChange={(e) => handleDateChange(e.target.value)}
                   onBlur={() => setDateDraft(null)}
-                  className="min-w-0 rounded-lg border border-white/80 bg-white/80 px-2 py-1 text-base text-ink-deep transition-colors hover:border-accent-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong sm:text-xs"
+                  className="min-w-0 rounded-lg border border-glass-line bg-glass/80 px-2 py-1 text-base text-ink-deep transition-colors hover:border-accent-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong sm:text-xs"
                 />
               </label>
             ) : (
@@ -216,7 +216,7 @@ export default function TaskCard({
                 focusRing,
                 confirming
                   ? "bg-red-500 px-3 text-white hover:bg-red-600"
-                  : "text-ink-subtle hover:bg-red-50 hover:text-red-600"
+                  : "text-ink-subtle hover:bg-danger-soft hover:text-danger"
               )}
             >
               <Trash2 className="h-4 w-4" />

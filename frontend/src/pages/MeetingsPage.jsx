@@ -116,7 +116,7 @@ export default function MeetingsPage() {
         type="button"
         onClick={() => setAdding(true)}
         className={cn(
-          "hover-lift inline-flex items-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
+          "hover-lift inline-flex items-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent hover:shadow-md",
           focusRing
         )}
       >
@@ -142,8 +142,8 @@ export default function MeetingsPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <StatTile label="Total meetings" value={meetings.length} />
         <StatTile label="Today" value={count("today")} accent={count("today") > 0 ? "accent" : "neutral"} />
-        <StatTile label="Upcoming" value={count("upcoming")} />
-        <StatTile label="Completed" value={count("completed")} />
+        <StatTile label="Upcoming" value={count("upcoming")} accent={count("upcoming") > 0 ? "green-soft" : "neutral"} />
+        <StatTile label="Completed" value={count("completed")} accent={count("completed") > 0 ? "ok" : "neutral"} />
         <StatTile label="Cancelled" value={count("cancelled")} accent={count("cancelled") > 0 ? "red" : "neutral"} />
       </div>
 

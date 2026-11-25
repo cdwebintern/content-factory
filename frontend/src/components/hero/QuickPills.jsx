@@ -4,7 +4,7 @@ import { celebrate } from "@/lib/confetti"
 import { formatWhen, minutesUntil, untilLabel } from "@/lib/dates"
 import { cn } from "@/lib/utils"
 
-const pill = "rounded-full border border-white/80 bg-white/70 backdrop-blur-md"
+const pill = "rounded-full border border-glass-line bg-glass/70 backdrop-blur-md"
 
 export default function QuickPills({ nextMeeting, highCount }) {
   const [fives, setFives] = useState(0)
@@ -40,7 +40,7 @@ export default function QuickPills({ nextMeeting, highCount }) {
               href={nextMeeting.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover-lift shrink-0 rounded-full bg-accent-strong px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-2"
+              className="hover-lift shrink-0 rounded-full bg-accent-strong px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-surface"
             >
               Join
             </a>
@@ -71,7 +71,7 @@ export default function QuickPills({ nextMeeting, highCount }) {
           celebrate(e)
           setFives((n) => n + 1)
         }}
-        className="hover-lift rounded-full bg-gradient-to-r from-accent to-accent-honey px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-strong/30 transition hover:brightness-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-2"
+        className="hover-lift rounded-full bg-gradient-to-r from-accent to-accent-honey px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-strong/30 transition hover:brightness-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-surface"
       >
         High-Five! 🙌{fives > 0 && <span className="ml-1.5 text-white/80">×{fives}</span>}
       </button>

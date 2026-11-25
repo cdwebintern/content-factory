@@ -32,7 +32,7 @@ export default function MeetingsPreview({ meetings, loadError = false }) {
 
           <div className="min-w-0 space-y-3">
             {shown.length === 0 ? (
-              <p className="rounded-2xl border border-white/80 bg-white/60 p-4 text-sm text-ink-muted">
+              <p className="rounded-2xl border border-glass-line bg-glass/60 p-4 text-sm text-ink-muted">
                 No other meetings coming up.
               </p>
             ) : (

@@ -10,7 +10,7 @@ export default function PageHeader({ title, description, action, backTo = "/", b
         <Link
           to={backTo}
           className={cn(
-            "hover-lift inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/70 px-3.5 py-2 text-xs font-medium text-ink-soft backdrop-blur-md hover:border-accent-mist hover:bg-white hover:text-accent-burnt",
+            "hover-lift inline-flex items-center gap-1.5 rounded-full border border-glass-line bg-glass/70 px-3.5 py-2 text-xs font-medium text-ink-soft backdrop-blur-md hover:border-accent-mist hover:bg-glass hover:text-accent-burnt",
             focusRing
           )}
         >

@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { Database, Link2, RefreshCw, RotateCcw } from "lucide-react"
+import { Database, Link2, Monitor, Moon, Palette, RefreshCw, RotateCcw, Sun } from "lucide-react"
 import GlassCard from "@/components/layout/GlassCard"
 import PageHeader from "@/components/layout/PageHeader"
 import { useData } from "@/context/dataContext"
 import { API_CONFIGURED } from "@/lib/api"
 import { field, fieldLabel } from "@/lib/formStyles"
+import { useTheme } from "@/hooks/useTheme"
 import { focusRing } from "@/lib/glass"
 import { isWebLink } from "@/lib/meetingLink"
 import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
@@ -25,6 +26,7 @@ function Row({ label, value }) {
 export default function SettingsPage() {
   const { settings, updateSettings, defaultMeetingLink, resetLocal, sources, refreshAll, refreshing } =
     useData()
+  const { theme, setTheme } = useTheme()
 
   const [draft, setDraft] = useState(settings.defaultMeetingLink)
   const [error, setError] = useState("")
@@ -66,6 +68,40 @@ export default function SettingsPage() {
       />
 
       <GlassCard
+        tone="soft"
+        icon={Palette}
+        title="Appearance"
+        description="Light or dark. The choice is remembered on this device."
+      >
+        <div role="radiogroup" aria-label="Theme" className="flex flex-wrap gap-2">
+          {[
+            { id: "light", label: "Light", icon: Sun },
+            { id: "dark", label: "Dark", icon: Moon },
+            { id: "system", label: "System", icon: Monitor },
+          ].map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              role="radio"
+              aria-checked={theme === id}
+              onClick={() => setTheme(id)}
+              className={cn(
+                button,
+                "px-4 py-2",
+                theme === id
+                  ? "bg-accent-strong text-white shadow-sm shadow-shade/20 hover:bg-accent"
+                  : "border border-glass-line bg-glass/70 text-ink-deep hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass",
+                focusRing
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </GlassCard>
+
+      <GlassCard
         tone="warm"
         icon={Link2}
         title="Meetings"
@@ -91,7 +127,7 @@ export default function SettingsPage() {
               className={field}
             />
             {error && (
-              <p role="alert" className="mt-1 text-xs text-red-600">
+              <p role="alert" className="mt-1 text-xs text-danger">
                 {error}
               </p>
             )}
@@ -111,7 +147,7 @@ export default function SettingsPage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <button
               type="submit"
-              className={cn(button, "hover-lift bg-accent-strong text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md", focusRing)}
+              className={cn(button, "hover-lift bg-accent-strong text-white shadow-sm shadow-shade/20 hover:bg-accent hover:shadow-md", focusRing)}
             >
               Save
             </button>
@@ -121,7 +157,7 @@ export default function SettingsPage() {
                 onClick={useSheetLink}
                 className={cn(
                   button,
-                  "border border-white/80 bg-white/70 text-ink-deep hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white",
+                  "border border-glass-line bg-glass/70 text-ink-deep hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass",
                   focusRing
                 )}
               >
@@ -129,7 +165,7 @@ export default function SettingsPage() {
               </button>
             )}
             {saved && (
-              <span role="status" className="text-sm font-medium text-emerald-700">
+              <span role="status" className="text-sm font-medium text-ok">
                 Saved
               </span>
             )}
@@ -171,7 +207,7 @@ export default function SettingsPage() {
             disabled={refreshing}
             className={cn(
               button,
-              "mt-4 w-fit border border-white/80 bg-white/80 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white disabled:opacity-60",
+              "mt-4 w-fit border border-glass-line bg-glass/80 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass disabled:opacity-60",
               focusRing
             )}
           >
@@ -205,7 +241,7 @@ export default function SettingsPage() {
             "w-fit",
             confirmReset
               ? "bg-red-500 text-white hover:bg-red-600"
-              : "border border-white/80 bg-white/80 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white",
+              : "border border-glass-line bg-glass/80 text-ink hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass",
             focusRing
           )}
         >

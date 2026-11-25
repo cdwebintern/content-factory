@@ -6,7 +6,7 @@ import { focusRing } from "@/lib/glass"
 import PlatformBadge from "./PlatformBadge"
 
 const arrowBtn =
-  "grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/70 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint hover:bg-accent-wash hover:text-accent-ink"
+  "grid h-8 w-8 place-items-center rounded-full border border-glass-line bg-glass/70 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint hover:bg-accent-wash hover:text-accent-ink"
 
 export default function PostSlider({ posts, onApprove }) {
   const { index, setIndex, paused, setPaused } = useAutoCycle(posts.length, 7000)
@@ -35,7 +35,7 @@ export default function PostSlider({ posts, onApprove }) {
       {/* key={post.id} remounts the slide so it fades in on every change */}
       <div
         key={post.id}
-        className="flex min-h-67.5 animate-in flex-col gap-4 rounded-2xl border border-white/80 bg-linear-to-br from-accent-mist/50 via-white/70 to-white/60 p-5 duration-500 fade-in"
+        className="flex min-h-67.5 animate-in flex-col gap-4 rounded-2xl border border-glass-line bg-linear-to-br from-accent-mist/50 via-glass/70 to-glass/60 p-5 duration-500 fade-in"
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <PlatformBadge platform={post.platform} format={post.format} />
@@ -50,7 +50,7 @@ export default function PostSlider({ posts, onApprove }) {
           <p className="text-base font-semibold text-ink">{post.client}</p>
         </div>
 
-        <blockquote className="flex-1 rounded-xl border-l-4 border-accent bg-white/80 p-3 text-sm leading-relaxed text-ink-deep">
+        <blockquote className="flex-1 rounded-xl border-l-4 border-accent bg-glass/80 p-3 text-sm leading-relaxed text-ink-deep">
           “{post.hook}”
         </blockquote>
 
@@ -64,7 +64,7 @@ export default function PostSlider({ posts, onApprove }) {
             type="button"
             onClick={(e) => onApprove(post.id, e)}
             className={cn(
-              "hover-lift w-full rounded-full bg-accent-strong px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
+              "hover-lift w-full rounded-full bg-accent-strong px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent hover:shadow-md",
               focusRing
             )}
           >

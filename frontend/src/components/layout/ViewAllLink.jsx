@@ -8,7 +8,7 @@ export default function ViewAllLink({ to, children }) {
     <Link
       to={to}
       className={cn(
-        "group hover-lift inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent-strong px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent hover:shadow-md",
+        "group hover-lift inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent-strong px-4 py-2.5 text-xs font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent hover:shadow-md",
         focusRing
       )}
     >

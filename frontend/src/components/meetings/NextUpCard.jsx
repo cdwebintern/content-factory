@@ -8,7 +8,7 @@ export default function NextUpCard({ meeting }) {
   const startsText = live ? "In progress" : `Starts ${untilLabel(meeting.start)}`
 
   return (
-    <div className="flex h-full min-w-0 flex-col gap-4 rounded-3xl bg-gradient-to-br from-ink via-ink to-accent-dark p-4 text-white shadow-lg shadow-accent-ink/20 ring-1 ring-accent/20 sm:p-5">
+    <div className="flex h-full min-w-0 flex-col gap-4 rounded-3xl bg-gradient-to-br from-feature via-feature to-feature-end p-4 text-white shadow-lg shadow-shade/20 ring-1 ring-accent/20 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Pulsing badge: a ping circle layered behind a solid dot */}
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white">

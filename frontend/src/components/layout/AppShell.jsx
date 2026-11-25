@@ -90,7 +90,7 @@ export default function AppShell() {
 
       <div className="min-w-0 flex-1">
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-accent-ink/10 bg-white/85 px-4 shadow-sm backdrop-blur-xl lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-accent-ink/10 bg-glass/85 px-4 shadow-sm backdrop-blur-xl lg:hidden">
           <div className="flex min-w-0 items-center gap-3">
             <MobileNav active={active} onSelect={handleNavSelect} tasksCount={stats.pending} />
             <div className="flex min-w-0 items-center gap-2">

@@ -5,16 +5,18 @@ import { cn } from "@/lib/utils"
 import { focusRing } from "@/lib/glass"
 import StatsStrip from "./StatsStrip"
 
+// Categories borrow the secondary green so they are easy to scan by colour
+// while the orange stays reserved for the headline "winning ad" state.
 const categoryStyles = {
-  "SEO / AEO": "bg-accent-soft text-accent-burnt",
-  "Meta Ads": "bg-accent-soft text-accent-ink",
+  "SEO / AEO": "bg-green-soft text-green-ink",
+  "Meta Ads": "bg-green-mist text-green-ink",
   "Winning Ad": "bg-accent text-white",
   "Local SEO": "bg-accent-mist text-accent-ink",
-  Content: "bg-accent-soft text-accent-burnt",
+  Content: "bg-green-tint text-green-ink",
 }
 
 const arrowBtn =
-  "grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/70 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint hover:bg-accent-wash hover:text-accent-ink"
+  "grid h-8 w-8 place-items-center rounded-full border border-glass-line bg-glass/70 text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint hover:bg-accent-wash hover:text-accent-ink"
 
 export default function NewsPulse({ items, pending, meetingsToday, overdue }) {
   const { index, setIndex, paused, setPaused } = useAutoCycle(items.length, 6000)

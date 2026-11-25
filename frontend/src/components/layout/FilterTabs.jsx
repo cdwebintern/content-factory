@@ -24,16 +24,16 @@ export default function FilterTabs({ tabs, value, onChange, label }) {
               "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-medium transition-all duration-200",
               focusRing,
               active
-                ? "border-accent-strong bg-accent-strong text-white shadow-sm shadow-accent-ink/15"
-                : "border-white/80 bg-white/60 text-ink-muted hover:-translate-y-0.5 hover:border-accent-mist hover:bg-accent-wash hover:text-accent-ink",
-              alert && "border-red-200 text-red-600"
+                ? "border-accent-strong bg-accent-strong text-white shadow-sm shadow-shade/15"
+                : "border-glass-line bg-glass/60 text-ink-muted hover:-translate-y-0.5 hover:border-accent-mist hover:bg-accent-wash hover:text-accent-ink",
+              alert && "border-danger-border text-danger"
             )}
           >
             {tab.label}
             <span
               className={cn(
                 "rounded-full px-1.5 text-[11px]",
-                active ? "bg-accent-soft text-accent-ink" : alert ? "bg-red-50" : "bg-black/5"
+                active ? "bg-accent-soft text-accent-ink" : alert ? "bg-danger-soft" : "bg-ink/5"
               )}
             >
               {tab.count}

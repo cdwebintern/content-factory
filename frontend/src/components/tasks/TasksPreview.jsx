@@ -20,7 +20,7 @@ export default function TasksPreview({ tasks, onToggle, onCyclePriority, loadErr
         <>
           {stats.pending} pending · {stats.today} due today
           {stats.overdue > 0 && (
-            <span className="font-medium text-red-600"> · {stats.overdue} overdue</span>
+            <span className="font-medium text-danger"> · {stats.overdue} overdue</span>
           )}
         </>
       }

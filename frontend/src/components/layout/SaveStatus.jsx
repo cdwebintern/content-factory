@@ -19,8 +19,8 @@ export default function SaveStatus() {
         className={cn(
           "pointer-events-auto flex max-w-md items-center gap-2.5 rounded-2xl border px-4 py-2.5 text-sm font-medium shadow-lg backdrop-blur-xl",
           error && saving === 0
-            ? "border-red-200 bg-red-50/95 text-red-900"
-            : "border-white/80 bg-white/90 text-ink"
+            ? "border-danger-border bg-danger-soft/95 text-danger"
+            : "border-glass-line bg-glass/90 text-ink"
         )}
       >
         {saving > 0 ? (
@@ -38,7 +38,7 @@ export default function SaveStatus() {
               type="button"
               onClick={dismissError}
               aria-label="Dismiss"
-              className="shrink-0 rounded-full p-1 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-900"
+              className="shrink-0 rounded-full p-1 hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger"
             >
               <X className="h-4 w-4" />
             </button>

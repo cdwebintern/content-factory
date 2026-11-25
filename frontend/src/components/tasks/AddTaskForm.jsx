@@ -49,7 +49,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
     <form
       onSubmit={handleSubmit}
       onKeyDown={(e) => e.key === "Escape" && onCancel()}
-      className="space-y-3 rounded-2xl border border-white/80 bg-white/70 p-4 shadow-sm shadow-accent-ink/5"
+      className="space-y-3 rounded-2xl border border-glass-line bg-glass/70 p-4 shadow-sm shadow-shade/5"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-ink">New task</h3>
@@ -82,7 +82,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
           className={field}
         />
         {error && (
-          <p id="new-task-error" role="alert" className="mt-1 text-xs text-red-600">
+          <p id="new-task-error" role="alert" className="mt-1 text-xs text-danger">
             {error}
           </p>
         )}
@@ -154,7 +154,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
                 "rounded-full px-2 py-2 text-xs font-medium capitalize transition-all duration-200",
                 focusRing,
                 priority === p
-                  ? "bg-accent-strong text-white shadow-sm shadow-accent-ink/20"
+                  ? "bg-accent-strong text-white shadow-sm shadow-shade/20"
                   : "text-ink-muted hover:bg-accent-soft/70 hover:text-accent-ink"
               )}
             >
@@ -169,7 +169,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
           type="button"
           onClick={onCancel}
           className={cn(
-            "rounded-full border border-white/80 bg-white/70 px-4 py-2.5 text-sm font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white hover:text-accent-ink",
+            "rounded-full border border-glass-line bg-glass/70 px-4 py-2.5 text-sm font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass hover:text-accent-ink",
             focusRing
           )}
         >
@@ -178,7 +178,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         <button
           type="submit"
           className={cn(
-            "hover-lift rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent",
+            "hover-lift rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent",
             focusRing
           )}
         >

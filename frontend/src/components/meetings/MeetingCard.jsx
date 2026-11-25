@@ -13,11 +13,11 @@ import JoinButton from "./JoinButton"
 import PriorityBadge from "./PriorityBadge"
 
 const PHASES = {
-  live: { text: "Live now", className: "bg-red-100 text-red-700" },
+  live: { text: "Live now", className: "bg-danger-soft text-danger" },
   upcoming: { text: "Scheduled", className: "bg-accent-soft text-accent-burnt" },
-  completed: { text: "Completed", className: "bg-emerald-100 text-emerald-800" },
-  ended: { text: "Ended", className: "bg-black/5 text-ink-muted" },
-  cancelled: { text: "Cancelled", className: "bg-red-100 text-red-700" },
+  completed: { text: "Completed", className: "bg-ok-soft text-ok" },
+  ended: { text: "Ended", className: "bg-ink/5 text-ink-muted" },
+  cancelled: { text: "Cancelled", className: "bg-danger-soft text-danger" },
 }
 const MUTED = ["completed", "ended", "cancelled"]
 
@@ -91,7 +91,7 @@ export default function MeetingCard({
     return (
       <li
         id={`meeting-${meeting.id}`}
-        className={cn(tile, "flex min-w-0 flex-col gap-3 border-2 border-accent-ink/15 p-3.5 shadow-sm shadow-accent-ink/5")}
+        className={cn(tile, "flex min-w-0 flex-col gap-3 border-2 border-accent-ink/15 p-3.5 shadow-sm shadow-shade/5")}
       >
         <form onSubmit={saveEdit} className="space-y-2.5">
           <div>
@@ -164,7 +164,7 @@ export default function MeetingCard({
           </div>
 
           {editError && (
-            <p role="alert" className="text-xs font-medium text-red-600">
+            <p role="alert" className="text-xs font-medium text-danger">
               {editError}
             </p>
           )}
@@ -174,7 +174,7 @@ export default function MeetingCard({
               type="button"
               onClick={() => setEditing(false)}
               className={cn(
-                "rounded-full border border-white/80 bg-white/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white hover:text-accent-ink",
+                "rounded-full border border-glass-line bg-glass/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass hover:text-accent-ink",
                 focusRing
               )}
             >
@@ -183,7 +183,7 @@ export default function MeetingCard({
             <button
               type="submit"
               className={cn(
-                "hover-lift rounded-full bg-accent-strong px-4 py-1.5 text-xs font-semibold text-white shadow-sm shadow-accent-ink/20 hover:bg-accent",
+                "hover-lift rounded-full bg-accent-strong px-4 py-1.5 text-xs font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent",
                 focusRing
               )}
             >
@@ -200,9 +200,9 @@ export default function MeetingCard({
       id={`meeting-${meeting.id}`}
       className={cn(
         tile,
-        "flex min-w-0 flex-col gap-2.5 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint/70 hover:bg-white/90 hover:shadow-md hover:shadow-accent-ink/10",
+        "flex min-w-0 flex-col gap-2.5 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-tint/70 hover:bg-glass/90 hover:shadow-md hover:shadow-shade/10",
         !isNext && "border-2 border-accent-ink/15",
-        muted && "bg-white/40",
+        muted && "bg-glass/40",
         isNext && "ring-2 ring-accent-strong"
       )}
     >
@@ -296,7 +296,7 @@ export default function MeetingCard({
                     title="Mark completed"
                     aria-label={`Mark "${meeting.title}" as completed`}
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800",
+                      "inline-flex items-center gap-1 rounded-full border border-glass-line bg-glass/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-ok-border hover:bg-ok-soft hover:text-ok",
                       focusRing
                     )}
                   >
@@ -309,7 +309,7 @@ export default function MeetingCard({
                     title="Cancel meeting"
                     aria-label={`Cancel "${meeting.title}"`}
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700",
+                      "inline-flex items-center gap-1 rounded-full border border-glass-line bg-glass/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-danger-border hover:bg-danger-soft hover:text-danger",
                       focusRing
                     )}
                   >
@@ -326,7 +326,7 @@ export default function MeetingCard({
                   title="Reopen as scheduled"
                   aria-label={`Reopen "${meeting.title}"`}
                   className={cn(
-                    "inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-accent-mist hover:bg-accent-wash hover:text-accent-burnt",
+                    "inline-flex items-center gap-1 rounded-full border border-glass-line bg-glass/70 px-2 py-0.5 text-xs font-medium text-ink-soft transition-colors hover:border-accent-mist hover:bg-accent-wash hover:text-accent-burnt",
                     focusRing
                   )}
                 >

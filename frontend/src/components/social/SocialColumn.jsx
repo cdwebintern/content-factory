@@ -56,7 +56,7 @@ icon={Share2}
                 "rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200",
                 focusRing,
                 tab === t.id
-                  ? "bg-accent-strong text-white shadow-sm shadow-accent-ink/20"
+                  ? "bg-accent-strong text-white shadow-sm shadow-shade/20"
                   : "text-ink-muted hover:bg-accent-soft/70 hover:text-accent-ink"
               )}
             >

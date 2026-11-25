@@ -20,7 +20,7 @@ const STATUS = {
 
 function Detail({ label, value }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-white/80 bg-white/60 p-3.5 transition-colors hover:border-accent-mist">
+    <div className="min-w-0 rounded-2xl border border-glass-line bg-glass/60 p-3.5 transition-colors hover:border-accent-mist">
       <dt className="text-xs font-medium text-ink-faint">{label}</dt>
       <dd className="mt-1 truncate text-sm font-medium text-ink">{value}</dd>
     </div>
@@ -44,7 +44,7 @@ export default function ProfilePage() {
 
       <GlassCard>
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-honey text-3xl font-semibold text-white shadow-lg shadow-accent-ink/25 ring-4 ring-white/60">
+          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-accent-honey text-3xl font-semibold text-white shadow-lg shadow-shade/25 ring-4 ring-glass-line">
             {getInitials(currentUser.name)}
           </div>
           <div className="min-w-0 space-y-2">
@@ -52,7 +52,7 @@ export default function ProfilePage() {
               {currentUser.name}
             </h2>
             <p className="text-sm text-ink-muted">{currentUser.role}</p>
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/70 px-3 py-1 text-xs font-medium text-ink-deep">
+            <span className="inline-flex items-center gap-2 rounded-full border border-glass-line bg-glass/70 px-3 py-1 text-xs font-medium text-ink-deep">
               <span className={cn("h-2 w-2 rounded-full", status.dot)} aria-hidden />
               {status.label}
             </span>
@@ -73,10 +73,10 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
         <StatTile label="Assigned to me" value={stats.total} />
-        <StatTile label="Pending" value={stats.pending} />
+        <StatTile label="Pending" value={stats.pending} accent={stats.pending > 0 ? "green-soft" : "neutral"} />
         <StatTile label="Due today" value={stats.today} accent={stats.today > 0 ? "accent" : "neutral"} />
         <StatTile label="Overdue" value={stats.overdue} accent={stats.overdue > 0 ? "red" : "neutral"} />
-        <StatTile label="Done" value={stats.done} />
+        <StatTile label="Done" value={stats.done} accent={stats.done > 0 ? "ok" : "neutral"} />
       </div>
 
       <GlassCard
@@ -100,7 +100,7 @@ export default function ProfilePage() {
       <Link
         to="/tasks"
         className={cn(
-          "hover-lift inline-flex w-fit rounded-full border border-white/80 bg-white/70 px-4 py-2.5 text-sm font-medium text-ink-deep hover:border-accent-mist hover:bg-white hover:text-accent-ink",
+          "hover-lift inline-flex w-fit rounded-full border border-glass-line bg-glass/70 px-4 py-2.5 text-sm font-medium text-ink-deep hover:border-accent-mist hover:bg-glass hover:text-accent-ink",
           focusRing
         )}
       >

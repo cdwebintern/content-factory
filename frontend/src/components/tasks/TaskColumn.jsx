@@ -66,7 +66,7 @@ export default function TaskColumn({
         <>
           {stats.pending} pending
           {stats.overdue > 0 && (
-            <span className="font-medium text-red-600"> · {stats.overdue} overdue</span>
+            <span className="font-medium text-danger"> · {stats.overdue} overdue</span>
           )}
         </>
       }
@@ -80,7 +80,7 @@ export default function TaskColumn({
               type="button"
               onClick={() => setAdding(true)}
               className={cn(
-                "flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-accent-light/70 bg-white/40 py-2.5 text-sm font-medium text-ink-deep transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent-wash hover:text-accent-ink",
+                "flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-accent-light/70 bg-glass/40 py-2.5 text-sm font-medium text-ink-deep transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent-wash hover:text-accent-ink",
                 focusRing
               )}
             >
@@ -119,9 +119,9 @@ export default function TaskColumn({
                   "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200",
                   focusRing,
                   active
-                    ? "border-accent-strong bg-accent-strong text-white shadow-sm shadow-accent-ink/15"
-                    : "border-white/80 bg-white/60 text-ink-muted hover:-translate-y-0.5 hover:border-accent-mist hover:bg-accent-wash hover:text-accent-ink",
-                  alert && "border-red-200 text-red-600"
+                    ? "border-accent-strong bg-accent-strong text-white shadow-sm shadow-shade/15"
+                    : "border-glass-line bg-glass/60 text-ink-muted hover:-translate-y-0.5 hover:border-accent-mist hover:bg-accent-wash hover:text-accent-ink",
+                  alert && "border-danger-border text-danger"
                 )}
               >
                 {tab.label}
@@ -131,8 +131,8 @@ export default function TaskColumn({
                     active
                       ? "bg-accent-soft text-accent-ink"
                       : alert
-                        ? "bg-red-50"
-                        : "bg-black/5"
+                        ? "bg-danger-soft"
+                        : "bg-ink/5"
                   )}
                 >
                   {count}

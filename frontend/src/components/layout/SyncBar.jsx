@@ -14,7 +14,7 @@ function formatAgo(date, now) {
 const latest = (dates) => dates.filter(Boolean).reduce((a, b) => (a > b ? a : b), null)
 
 const actionBtn =
-  "inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-white hover:text-accent-ink disabled:opacity-60"
+  "inline-flex items-center gap-1.5 rounded-full border border-glass-line bg-glass/80 px-3.5 py-1.5 text-xs font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass hover:text-accent-ink disabled:opacity-60"
 
 // sources: [{ label, status, error, lastSynced, skipped }, ...]
 export default function SyncBar({ sources, refreshing, onRefresh }) {
@@ -45,7 +45,7 @@ export default function SyncBar({ sources, refreshing, onRefresh }) {
     return (
       <div
         role="alert"
-        className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50/90 px-4 py-3 text-sm text-red-900"
+        className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-danger-border bg-danger-soft/90 px-4 py-3 text-sm text-danger"
       >
         <div className="space-y-1">
           <p className="font-semibold">Couldn't load from Google Sheets.</p>
@@ -70,7 +70,7 @@ export default function SyncBar({ sources, refreshing, onRefresh }) {
   const withSkipped = sources.filter((s) => s.skipped.length > 0)
 
   return (
-    <div className="space-y-2 rounded-2xl border border-white/80 bg-white/60 px-4 py-2.5 text-sm text-ink-soft backdrop-blur-xl">
+    <div className="space-y-2 rounded-2xl border border-glass-line bg-glass/60 px-4 py-2.5 text-sm text-ink-soft backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <span className="inline-flex items-center gap-2 text-ink-soft">
           <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden />

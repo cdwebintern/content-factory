@@ -3,7 +3,9 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
 
-
+/* Dark mode is switched by the .dark class on <html> (see src/lib/theme.js),
+   so the choice can be stored per device instead of following only the OS. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Hero background motion */
 @keyframes drift-a {
@@ -21,6 +23,37 @@
 @keyframes silk {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(-24px, 10px); }
+}
+
+/* Theme switch: newer browsers crossfade the whole page (gradients included)
+   through the View Transitions API, started from src/lib/theme.js. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fallback: let the palette colors ease instead of snapping, then drop the
+   class so normal hover/press transitions are not overridden for long. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    fill 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.42s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
 }
 
 .animate-drift-a { animation: drift-a 16s ease-in-out infinite; }
@@ -56,6 +89,24 @@
   --color-accent-ink: #7c2d12; /* headings on tint, shadows */
   --color-accent-dark: #431407; /* strongest tint text */
   --color-accent-honey: #f59e0b; /* gradient partner for accent */
+  --color-shade: #431407; /* shadow cast by glass + chips */
+
+  /* Secondary hue: green (~145deg), the split-complement of orange.
+     Orange stays primary; green carries the second-level meaning
+     (priority, upcoming, information) and never competes with it.
+     Keep it to roughly a tenth of the surface: tints and text, not fills.
+     Amber above is the analogous partner and stays in gradients only;
+     the semantic --color-ok below is darker and only marks success states. */
+  --color-green-soft: #f3fbf4;
+  --color-green-mist: #dcf7e3;
+  --color-green-tint: #b8ecc7;
+  --color-green: #16a34a;
+  --color-green-strong: #15803d;
+  --color-green-ink: #14532d;
+
+  /* Deep panel used by the "Next up" card, dark in both themes */
+  --color-feature: #1c1917;
+  --color-feature-end: #431407;
 
   /* Warm neutrals for text and hairlines */
   --color-ink: #1c1917; /* primary text */
@@ -67,6 +118,16 @@
 
   /* Surfaces */
   --color-surface: #fff8f1; /* page background */
+  --color-glass: #ffffff; /* cards, chips, headers, fields */
+  --color-glass-line: rgb(255 255 255 / 0.8); /* frosted edge on glass */
+
+  /* Semantic state colours (not part of the warm ramp) */
+  --color-danger: #dc2626;
+  --color-danger-soft: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-ok: #047857;
+  --color-ok-soft: #ecfdf5;
+  --color-ok-border: #a7f3d0;
 
   /* Shared glass elevation */
   --shadow-glass: 0 12px 40px -14px rgb(124 45 18 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.85);
@@ -83,6 +144,73 @@
   --border: #78350f1a;
   --input: #78350f24;
   --ring: var(--color-accent-strong);
+  --muted: rgb(120 53 15 / 0.06);
+  --muted-foreground: var(--color-ink-faint);
+  --popover: #ffffff;
+  --popover-foreground: var(--color-ink);
+}
+
+/* ===== Dark theme =====
+   Only the variables change here; every token utility on the site follows.
+   Black leads in dark mode: near-black surfaces and neutral ink, with the
+   orange ramp demoted to a secondary accent for highlights and actions. */
+.dark {
+  color-scheme: dark;
+
+  --color-accent-wash: #141210; /* page + section wash */
+  --color-accent-soft: #1d1814; /* soft chips, hovers */
+  --color-accent-mist: #2a1e15; /* card tints */
+  --color-accent-tint: #4a2a12; /* borders, decorations */
+  --color-accent-light: #fdba74;
+  --color-accent-deep: #fb923c;
+  --color-accent-burnt: #fdba74; /* deep tint text -> light peach */
+  --color-accent-ink: #f5d0b0; /* headings on tint */
+  --color-accent-dark: #ffe9d6; /* strongest tint text */
+  --color-shade: #000000;
+
+  /* Green keeps its hue but drops to deep, low-chroma fills; text steps go
+     light so the tinted chips stay readable on black. */
+  --color-green-soft: #0a1c11;
+  --color-green-mist: #0f2617;
+  --color-green-tint: #1a4a2c;
+  --color-green: #4ade80;
+  --color-green-strong: #86efac;
+  --color-green-ink: #bbf7d0;
+
+  --color-ink: #fafafa;
+  --color-ink-deep: #ededed;
+  --color-ink-soft: #d4d4d4;
+  --color-ink-muted: #bdbdbd;
+  --color-ink-faint: #a1a1a1;
+  --color-ink-subtle: #737373;
+
+  --color-surface: #0a0a0a;
+  --color-glass: #171717;
+  --color-glass-line: rgb(255 255 255 / 0.09);
+
+  --color-feature: #0f0d0b;
+  --color-feature-end: #2a1206;
+
+  --color-danger: #fca5a5;
+  --color-danger-soft: #2e1212;
+  --color-danger-border: #7f1d1d;
+  --color-ok: #6ee7b7;
+  --color-ok-soft: #0c2018;
+  --color-ok-border: #14532d;
+
+  --shadow-glass: 0 12px 40px -14px rgb(0 0 0 / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.05);
+
+  --background: var(--color-surface);
+  --foreground: var(--color-ink);
+  --card: rgb(23 23 23 / 0.85);
+  --card-foreground: var(--color-ink);
+  --primary-foreground: #0a0a0a;
+  --border: rgb(255 255 255 / 0.09);
+  --input: rgb(255 255 255 / 0.14);
+  --muted: rgb(255 255 255 / 0.06);
+  --muted-foreground: var(--color-ink-faint);
+  --popover: #141414;
+  --popover-foreground: var(--color-ink);
 }
 
 body {
