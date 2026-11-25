@@ -1,7 +1,7 @@
 import { fetchRange } from "@/lib/sheetsApi"
 
 const TAB = import.meta.env.VITE_MEETINGS_TAB || "Meetings"
-const CELLS = "A1:J1000"
+const CELLS = "A1:Z1000"
 
 // Header matching ignores case, spaces and underscores,
 // so "meeting _title", "Meeting Title" and "meeting_title" all work

@@ -6,9 +6,9 @@ export default function PersonaCard({ user, cutoutSrc = "/bilal-cutout.png" }) {
   const [cutoutOk, setCutoutOk] = useState(true)
 
   return (
-    <div className="relative hidden min-h-75 overflow-hidden rounded-3xl bg-[#cfe9de] md:block">
+    <div className="relative hidden min-h-75 overflow-visible rounded-3xl  md:block ">
       {/* Lime ribbon, decorative */}
-      <svg
+      {/* <svg
         aria-hidden
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 200 300"
@@ -21,20 +21,20 @@ export default function PersonaCard({ user, cutoutSrc = "/bilal-cutout.png" }) {
           strokeWidth="26"
           strokeLinecap="round"
         />
-      </svg>
+      </svg> */}
 
-      <div className="relative z-10 p-4">
+      {/* <div className="relative z-10 p-4">
         <p className="text-base font-semibold text-neutral-900">{user.name}</p>
-      </div>
+      </div> */}
 
       {/* Cutout photo or initials fallback */}
-      <div className="absolute inset-x-0 bottom-0 top-12 flex items-end justify-center">
+      <div className="absolute inset-x-0 bottom-0 -top-8 z-10 flex items-end justify-center">
         {cutoutOk ? (
           <img
             src={cutoutSrc}
             alt=""
             onError={() => setCutoutOk(false)}
-            className="max-h-full object-contain object-bottom drop-shadow-xl"
+            className="block max-h-full object-contain object-bottom drop-shadow-xl"
           />
         ) : (
           <div className="mb-20 grid h-32 w-32 place-items-center rounded-full bg-neutral-900 text-4xl font-semibold text-lime-accent shadow-xl ring-4 ring-white/60">
@@ -44,8 +44,9 @@ export default function PersonaCard({ user, cutoutSrc = "/bilal-cutout.png" }) {
       </div>
 
       {/* Persona tagline */}
-      <div className="absolute inset-x-3 bottom-3 rounded-2xl border border-white/80 bg-white/65 px-3 py-2 text-center text-xs font-medium text-neutral-900 backdrop-blur-md">
-        {user.role}
+      <div className="absolute inset-x-3 bottom-0 z-20 rounded-2xl border border-white/80 bg-white/75 p-3 text-center backdrop-blur-md shadow-lg">
+        <p className="text-sm font-semibold text-neutral-900">{user.name}</p>
+        <p className="text-xs text-neutral-600">{user.role}</p>
       </div>
     </div>
   )

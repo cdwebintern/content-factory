@@ -11,14 +11,14 @@ import (
 	"google.golang.org/api/idtoken"
 )
 
-func newRouter(cfg config, store *sheetStore, auth authenticator) http.Handler {
-	s := &server{store: store}
-
+func newRouter(cfg config, s *server, auth authenticator) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 	})
 	mux.Handle("PATCH /api/tasks/{id}", auth.wrap(http.HandlerFunc(s.updateTask)))
+	mux.Handle("PATCH /api/meetings/{id}", auth.wrap(http.HandlerFunc(s.updateMeeting)))
+	mux.Handle("POST /api/meetings", auth.wrap(http.HandlerFunc(s.createMeeting)))
 
 	return logRequests(cors(cfg.AllowedOrigins, mux))
 }
@@ -95,7 +95,7 @@ func cors(allowed []string, next http.Handler) http.Handler {
 			h := w.Header()
 			h.Set("Access-Control-Allow-Origin", origin)
 			h.Set("Vary", "Origin")
-			h.Set("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS")
+			h.Set("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS")
 			h.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			h.Set("Access-Control-Max-Age", "600")
 		}

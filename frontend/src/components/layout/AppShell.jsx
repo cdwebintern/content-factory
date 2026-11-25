@@ -12,14 +12,25 @@ import { navGroups } from "@/data/nav"
 import { scrollToTop } from "@/lib/scroll"
 
 // Sidebar items that open their own page
-const ROUTES = { overview: "/", tasks: "/tasks", meetings: "/meetings" }
+const ROUTES = {
+  overview: "/",
+  tasks: "/tasks",
+  meetings: "/meetings",
+  profile: "/profile",
+  settings: "/settings",
+}
 // Sidebar items that scroll to a section of the home page
 const SECTIONS = { team: "socials" }
 
 const allNavItems = navGroups.flatMap((g) => g.items)
 
-const navFromPath = (pathname) =>
-  pathname.startsWith("/tasks") ? "tasks" : pathname.startsWith("/meetings") ? "meetings" : "overview"
+const navFromPath = (pathname) => {
+  if (pathname.startsWith("/tasks")) return "tasks"
+  if (pathname.startsWith("/meetings")) return "meetings"
+  if (pathname.startsWith("/profile")) return "profile"
+  if (pathname.startsWith("/settings")) return "settings"
+  return "overview"
+}
 
 export default function AppShell() {
   const location = useLocation()

@@ -32,14 +32,18 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	store, err := newSheetStore(ctx, cfg)
+	svc, err := newSheetsService(ctx)
 	if err != nil {
 		return fmt.Errorf("connect to Google Sheets (is GOOGLE_APPLICATION_CREDENTIALS set?): %w", err)
+	}
+	api := &server{
+		tasks:    newTable(svc, cfg.SheetID, cfg.TasksTab, taskSpec),
+		meetings: newTable(svc, cfg.SheetID, cfg.MeetingsTab, meetingSpec),
 	}
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.Port,
-		Handler:           newRouter(cfg, store, newAuthenticator(cfg)),
+		Handler:           newRouter(cfg, api, newAuthenticator(cfg)),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      30 * time.Second,

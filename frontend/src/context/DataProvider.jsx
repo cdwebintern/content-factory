@@ -2,19 +2,24 @@ import { useEffect, useMemo, useState } from "react"
 import { DataContext } from "./dataContext"
 import { tasks as demoTasks } from "@/data/tasks"
 import { meetings as demoMeetings } from "@/data/meetings"
+import { useMeetingEditing } from "@/hooks/useMeetingEditing"
 import { useSheetData } from "@/hooks/useSheetData"
 import { useTaskEditing } from "@/hooks/useTaskEditing"
 import { API_CONFIGURED } from "@/lib/api"
 import { applyLocal, emptyLocal, loadLocal, saveLocal, withField } from "@/lib/localTasks"
+import { applyMeetingEdits, toMeetingObject } from "@/lib/meetingEdits"
+import { resolveDefaultLink } from "@/lib/meetingLink"
 import { todaysMeetings } from "@/lib/meetingState"
 import { nextPriority } from "@/lib/priority"
+import { loadSettings, saveSettings } from "@/lib/settings"
 import { fetchSheetMeetings } from "@/lib/sheetMeetings"
 import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
 import { fetchSheetTasks } from "@/lib/sheetTasks"
-import { applyEdits } from "@/lib/taskEdits"
+import { applyEdits, stageEdits } from "@/lib/taskEdits"
 import { getTaskStats } from "@/lib/taskStats"
 
 const NO_LOCAL = emptyLocal()
+const NO_MEETING_EDITS = { edits: {}, added: [] }
 
 // Owns all task and meeting data, so every page shares one copy and the
 // sheet is fetched once instead of every time you change page.
@@ -22,13 +27,16 @@ export default function DataProvider({ children }) {
   const tasksSheet = useSheetData(fetchSheetTasks)
   const meetingsSheet = useSheetData(fetchSheetMeetings)
   const [local, setLocal] = useState(loadLocal)
+  const [demoMeetingsLocal, setDemoMeetingsLocal] = useState(NO_MEETING_EDITS)
+  const [settings, setSettings] = useState(loadSettings)
 
   // Sync mode: a sheet AND the save server are configured, so edits are saved to the sheet
   const syncMode = SHEET_CONFIGURED && API_CONFIGURED
   const editing = useTaskEditing({ reload: tasksSheet.reload })
+  const meetingEditing = useMeetingEditing({ reload: meetingsSheet.reload })
 
   const baseTasks = SHEET_CONFIGURED ? tasksSheet.items : demoTasks
-  const meetings = SHEET_CONFIGURED ? meetingsSheet.items : demoMeetings
+  const baseMeetings = SHEET_CONFIGURED ? meetingsSheet.items : demoMeetings
 
   // Layers, bottom to top: sheet (or demo) data, unsaved/just-saved edits (sync mode),
   // then device-only changes (every other mode)
@@ -41,10 +49,47 @@ export default function DataProvider({ children }) {
     [edited, syncMode, local]
   )
 
-  // Remember device-only changes between visits
+  const meetings = useMemo(() => {
+    if (syncMode) {
+      return applyMeetingEdits(
+        baseMeetings,
+        meetingEditing.edits,
+        meetingEditing.added,
+        meetingsSheet.syncStartedAt
+      )
+    }
+    if (!SHEET_CONFIGURED) {
+      return applyMeetingEdits(
+        baseMeetings,
+        demoMeetingsLocal.edits,
+        demoMeetingsLocal.added,
+        0
+      )
+    }
+    return baseMeetings
+  }, [
+    syncMode,
+    baseMeetings,
+    meetingEditing.edits,
+    meetingEditing.added,
+    meetingsSheet.syncStartedAt,
+    demoMeetingsLocal,
+  ])
+
+  // The link a new meeting starts with: Settings first, otherwise the sheet's most-used link
+  const defaultMeetingLink = useMemo(
+    () => resolveDefaultLink(meetings, settings.defaultMeetingLink),
+    [meetings, settings.defaultMeetingLink]
+  )
+
+  // Remember device-only changes and settings between visits
   useEffect(() => {
     saveLocal(local)
   }, [local])
+
+  useEffect(() => {
+    saveSettings(settings)
+  }, [settings])
 
   const changeField = (id, field, compute) =>
     setLocal((prev) => {
@@ -80,13 +125,51 @@ export default function DataProvider({ children }) {
         : { ...prev, overrides, deleted: [...prev.deleted, id] }
     })
 
+  // fields: any of { title, description, date, start, end, attendees, link, status, priority }
+  const editMeeting = (id, fields) => {
+    if (syncMode) {
+      meetingEditing.edit(id, fields)
+    } else if (!SHEET_CONFIGURED) {
+      setDemoMeetingsLocal((prev) => ({
+        ...prev,
+        edits: stageEdits(prev.edits, id, fields),
+      }))
+    }
+  }
+
+  const addMeeting = (payload) => {
+    if (syncMode) return meetingEditing.create(payload)
+    if (!SHEET_CONFIGURED) {
+      const id = `m-${Date.now()}`
+      setDemoMeetingsLocal((prev) => ({
+        ...prev,
+        added: [toMeetingObject(id, payload, null), ...prev.added],
+      }))
+      return Promise.resolve(id)
+    }
+    return Promise.resolve(null)
+  }
+
+  const updateSettings = (patch) => setSettings((prev) => ({ ...prev, ...patch }))
+  const resetLocal = () => {
+    setLocal(emptyLocal())
+    setDemoMeetingsLocal(NO_MEETING_EDITS)
+  }
+
+  const latestError =
+    meetingEditing.error && (!editing.error || meetingEditing.error.at >= editing.error.at)
+      ? meetingEditing.error
+      : editing.error
+
   const value = {
     tasks,
     meetings,
     stats: getTaskStats(tasks),
     meetingsTodayCount: todaysMeetings(meetings).length,
-    canEdit: !SHEET_CONFIGURED, // add and delete: demo mode only
+    canEdit: !SHEET_CONFIGURED, // add and delete tasks: demo mode only
     canEditFields: syncMode, // title and due date: saved to the sheet
+    canAddMeetings: syncMode || !SHEET_CONFIGURED,
+    canEditMeetings: syncMode || !SHEET_CONFIGURED,
     loading:
       SHEET_CONFIGURED &&
       (tasksSheet.status === "loading" || meetingsSheet.status === "loading"),
@@ -102,16 +185,25 @@ export default function DataProvider({ children }) {
       meetingsSheet.reload()
     },
     saveStatus: {
-      saving: editing.saving,
-      error: editing.error,
-      savedAt: editing.savedAt,
-      dismissError: editing.dismissError,
+      saving: editing.saving + meetingEditing.saving,
+      error: latestError,
+      savedAt: Math.max(editing.savedAt, meetingEditing.savedAt),
+      dismissError: () => {
+        editing.dismissError()
+        meetingEditing.dismissError()
+      },
     },
+    settings,
+    updateSettings,
+    defaultMeetingLink,
+    resetLocal,
     toggleTask,
     cyclePriority,
     editTask,
     addTask,
     deleteTask,
+    editMeeting,
+    addMeeting,
   }
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

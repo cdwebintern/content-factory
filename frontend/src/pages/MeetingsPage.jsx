@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { Video } from "lucide-react"
+import { Plus, Video } from "lucide-react"
 import FilterTabs from "@/components/layout/FilterTabs"
 import GlassCard from "@/components/layout/GlassCard"
 import PageHeader from "@/components/layout/PageHeader"
 import SearchField from "@/components/layout/SearchField"
 import StatTile from "@/components/layout/StatTile"
+import AddMeetingForm from "@/components/meetings/AddMeetingForm"
 import MeetingCard from "@/components/meetings/MeetingCard"
 import { useData } from "@/context/dataContext"
 import { useNow } from "@/hooks/useNow"
@@ -12,6 +13,7 @@ import { dayLabel, isToday } from "@/lib/dates"
 import { field } from "@/lib/formStyles"
 import { focusRing } from "@/lib/glass"
 import { isMeetingOver } from "@/lib/meetingState"
+import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
 import { cn } from "@/lib/utils"
 
 const TABS = [
@@ -45,12 +47,21 @@ function groupByDay(list) {
 }
 
 export default function MeetingsPage() {
-  const { meetings, meetingsStatus } = useData()
+  const {
+    meetings,
+    meetingsStatus,
+    canAddMeetings,
+    canEditMeetings,
+    defaultMeetingLink,
+    addMeeting,
+    editMeeting,
+  } = useData()
   const now = useNow(30000)
 
   const [filter, setFilter] = useState("upcoming")
   const [query, setQuery] = useState("")
   const [priority, setPriority] = useState("all")
+  const [adding, setAdding] = useState(false)
 
   const weekEnd = now.getTime() + 7 * 86400000
 
@@ -89,11 +100,43 @@ export default function MeetingsPage() {
     setPriority("all")
   }
 
+  const handleAdd = (payload) => {
+    addMeeting(payload)
+    setAdding(false)
+    clearFilters()
+    const [y, mo, d] = payload.date.split("-").map(Number)
+    const [h, min] = payload.end.split(":").map(Number)
+    const endDt = new Date(y, mo - 1, d, h, min)
+    setFilter(endDt > new Date() ? "upcoming" : "all")
+  }
+
+  const addButton =
+    canAddMeetings && !adding ? (
+      <button
+        type="button"
+        onClick={() => setAdding(true)}
+        className={cn(
+          "inline-flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700",
+          focusRing
+        )}
+      >
+        <Plus className="h-4 w-4" />
+        Add meeting
+      </button>
+    ) : null
+
   return (
     <>
       <PageHeader
         title="Meetings"
-        description="Every meeting on your calendar: when it is, who is attending, how important it is and how to join."
+        description={
+          !SHEET_CONFIGURED
+            ? "Every meeting on your calendar: when it is, who is attending, how important it is and how to join."
+            : canEditMeetings
+              ? "Every meeting from your Google Sheet. New meetings and changes made here are saved back to the sheet."
+              : "Every meeting from your Google Sheet. Set VITE_API_URL to add or edit meetings here."
+        }
+        action={addButton}
       />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -111,6 +154,14 @@ export default function MeetingsPage() {
         description={`Showing ${visible.length} of ${meetings.length}`}
       >
         <div className="space-y-4">
+          {adding && (
+            <AddMeetingForm
+              defaultLink={defaultMeetingLink}
+              onAdd={handleAdd}
+              onCancel={() => setAdding(false)}
+            />
+          )}
+
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,12rem)]">
             <SearchField
               value={query}
@@ -169,6 +220,7 @@ export default function MeetingsPage() {
                         now={now}
                         detailed
                         isNext={next?.id === m.id}
+                        onEdit={canEditMeetings ? (patch) => editMeeting(m.id, patch) : undefined}
                       />
                     ))}
                   </ul>

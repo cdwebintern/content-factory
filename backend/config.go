@@ -12,6 +12,7 @@ type config struct {
 	AppEnv         string
 	SheetID        string
 	TasksTab       string
+	MeetingsTab    string
 	AllowedOrigins []string
 	AuthMode       string // "none" for local development, "google" for real use
 	GoogleClientID string
@@ -24,6 +25,7 @@ func loadConfig() (config, error) {
 		AppEnv:         getenv("APP_ENV", "development"),
 		SheetID:        os.Getenv("SHEET_ID"),
 		TasksTab:       getenv("TASKS_TAB", "Tasks"),
+		MeetingsTab:    getenv("MEETINGS_TAB", "Meetings"),
 		AllowedOrigins: splitList(getenv("ALLOWED_ORIGINS", "http://localhost:5173")),
 		AuthMode:       getenv("AUTH_MODE", "none"),
 		GoogleClientID: os.Getenv("GOOGLE_CLIENT_ID"),

@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 	"unicode"
@@ -16,86 +18,107 @@ import (
 	"google.golang.org/api/googleapi"
 )
 
-var priorities = []string{"low", "medium", "high", "urgent"}
-
-// validate checks the patch and tidies it (trimmed title, lower-case priority).
-func (p *taskPatch) validate() error {
-	if p.Title == nil && p.Due == nil && p.Priority == nil && p.Done == nil {
-		return errors.New("send at least one of: title, due, priority, done")
-	}
-
-	if p.Title != nil {
-		t := strings.TrimSpace(*p.Title)
-		switch {
-		case t == "":
-			return errors.New("title cannot be empty")
-		case utf8.RuneCountInString(t) > 120:
-			return errors.New("title must be 120 characters or fewer")
-		case strings.ContainsFunc(t, unicode.IsControl):
-			return errors.New("title cannot contain control characters")
-		}
-		p.Title = &t
-	}
-
-	if p.Due != nil {
-		d, err := time.Parse("2006-01-02", *p.Due)
-		if err != nil || d.Format("2006-01-02") != *p.Due || d.Year() < 2000 || d.Year() > 2100 {
-			return errors.New("due must be a real date written as yyyy-mm-dd")
-		}
-	}
-
-	if p.Priority != nil {
-		pr := strings.ToLower(strings.TrimSpace(*p.Priority))
-		if !slices.Contains(priorities, pr) {
-			return fmt.Errorf("priority must be one of: %s", strings.Join(priorities, ", "))
-		}
-		p.Priority = &pr
-	}
-
-	return nil
-}
-
 type server struct {
-	store *sheetStore
+	tasks    *sheetTable
+	meetings *sheetTable
 }
 
-// PATCH /api/tasks/{id}  with a JSON body such as {"done": true} or {"title": "New name"}
-func (s *server) updateTask(w http.ResponseWriter, r *http.Request) {
-	id := strings.TrimSpace(r.PathValue("id"))
-	if id == "" || len(id) > 100 {
-		writeError(w, http.StatusBadRequest, "invalid task id")
-		return
-	}
+// ---- validation helpers ----------------------------------------------------
 
+func cleanText(label, s string, limit int, required bool) (string, error) {
+	s = strings.TrimSpace(s)
+	switch {
+	case required && s == "":
+		return "", fmt.Errorf("%s cannot be empty", label)
+	case utf8.RuneCountInString(s) > limit:
+		return "", fmt.Errorf("%s must be %d characters or fewer", label, limit)
+	case strings.ContainsFunc(s, unicode.IsControl):
+		return "", fmt.Errorf("%s cannot contain line breaks or control characters", label)
+	}
+	return s, nil
+}
+
+func cleanDate(s string) (string, error) {
+	s = strings.TrimSpace(s)
+	d, err := time.Parse("2006-01-02", s)
+	if err != nil || d.Format("2006-01-02") != s || d.Year() < 2000 || d.Year() > 2100 {
+		return "", errors.New("date must be a real date written as yyyy-mm-dd")
+	}
+	return s, nil
+}
+
+func cleanClock(s string) (string, error) {
+	s = strings.TrimSpace(s)
+	tm, err := time.Parse("15:04", s)
+	if err != nil || tm.Format("15:04") != s {
+		return "", errors.New("times must be written as HH:MM, for example 09:30")
+	}
+	return s, nil
+}
+
+// cleanLink accepts only web addresses. An empty link is allowed and clears the cell.
+func cleanLink(s string) (string, error) {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return "", nil
+	}
+	if utf8.RuneCountInString(s) > 500 {
+		return "", errors.New("link must be 500 characters or fewer")
+	}
+	u, err := url.Parse(s)
+	if err != nil || (u.Scheme != "https" && u.Scheme != "http") || u.Host == "" {
+		return "", errors.New("link must be a web address starting with https:// or http://")
+	}
+	return s, nil
+}
+
+func cleanChoice(label, s string, allowed []string) (string, error) {
+	v := strings.ToLower(strings.TrimSpace(s))
+	if !slices.Contains(allowed, v) {
+		return "", fmt.Errorf("%s must be one of: %s", label, strings.Join(allowed, ", "))
+	}
+	return v, nil
+}
+
+// ---- request helpers -------------------------------------------------------
+
+func pathID(r *http.Request) (string, bool) {
+	id := strings.TrimSpace(r.PathValue("id"))
+	return id, id != "" && len(id) <= 100
+}
+
+// decodeBody reads a small JSON body and rejects unknown fields.
+// It writes the error reply itself and returns false when the body is unusable.
+func decodeBody(w http.ResponseWriter, r *http.Request, dst any) bool {
 	r.Body = http.MaxBytesReader(w, r.Body, 16<<10)
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
 
-	var patch taskPatch
-	if err := dec.Decode(&patch); err != nil {
-		writeError(w, http.StatusBadRequest, "request body must be JSON with title, due, priority or done")
-		return
+	if err := dec.Decode(dst); err != nil {
+		writeError(w, http.StatusBadRequest, "request body must be valid JSON with known fields")
+		return false
 	}
-	if err := patch.validate(); err != nil {
-		writeError(w, http.StatusUnprocessableEntity, err.Error())
-		return
+	return true
+}
+
+// fieldNames lists the field names in a stable order.
+func fieldNames(fields map[string]any) []string {
+	names := make([]string, 0, len(fields))
+	for name := range fields {
+		names = append(names, name)
 	}
+	sort.Strings(names)
+	return names
+}
 
-	ctx, cancel := context.WithTimeout(r.Context(), 20*time.Second)
-	defer cancel()
+// ---- replies ---------------------------------------------------------------
 
-	changed, err := s.store.UpdateTask(ctx, id, patch)
-	if err != nil {
-		status, msg := describeError(err)
-		if status >= 500 {
-			slog.Error("update task", "id", id, "error", err)
-		}
-		writeError(w, status, msg)
-		return
+func replyError(w http.ResponseWriter, what, id string, err error) {
+	status, msg := describeError(err)
+	if status >= 500 {
+		slog.Error(what, "id", id, "error", err)
 	}
-
-	slog.Info("task updated", "id", id, "fields", changed, "by", emailFrom(r.Context()))
-	writeJSON(w, http.StatusOK, map[string]any{"id": id, "updated": changed})
+	writeError(w, status, msg)
 }
 
 // describeError turns an internal error into an HTTP status and a safe, useful message.
@@ -104,8 +127,10 @@ func describeError(err error) (int, string) {
 	var gerr *googleapi.Error
 
 	switch {
-	case errors.Is(err, errTaskNotFound):
-		return http.StatusNotFound, "no task with that id in the sheet"
+	case errors.Is(err, errRowNotFound):
+		return http.StatusNotFound, "nothing with that id in the sheet"
+	case errors.Is(err, errSheetFull):
+		return http.StatusConflict, fmt.Sprintf("the sheet has no free rows (limit %d)", maxRows)
 	case errors.As(err, &missing):
 		return http.StatusUnprocessableEntity, missing.Error()
 	case errors.Is(err, context.DeadlineExceeded):
@@ -113,7 +138,7 @@ func describeError(err error) (int, string) {
 	case errors.As(err, &gerr) && gerr.Code == http.StatusForbidden:
 		return http.StatusBadGateway, "the server cannot edit the sheet; share it with the service account as Editor"
 	case errors.As(err, &gerr) && gerr.Code == http.StatusNotFound:
-		return http.StatusBadGateway, "the spreadsheet or tab was not found; check SHEET_ID and TASKS_TAB"
+		return http.StatusBadGateway, "the spreadsheet or tab was not found; check SHEET_ID, TASKS_TAB and MEETINGS_TAB"
 	case errors.As(err, &gerr) && gerr.Code == http.StatusTooManyRequests:
 		return http.StatusServiceUnavailable, "Google is limiting requests; try again in a minute"
 	default:
