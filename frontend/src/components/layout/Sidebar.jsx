@@ -1,9 +1,11 @@
 import { Settings } from "lucide-react"
+import SignInCard from "@/components/auth/SignInCard"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { navGroups, serviceTags } from "@/data/nav"
 import { getInitials } from "@/data/team"
 import { useData } from "@/context/dataContext"
+import { API_CONFIGURED } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import ThemeToggle from "./ThemeToggle"
 
@@ -86,6 +88,8 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
 
       {/* Settings and profile stay pinned to the bottom */}
       <div className="shrink-0 space-y-2 border-t border-accent-ink/5 p-4">
+        {API_CONFIGURED && <SignInCard />}
+
         <button
           type="button"
           onClick={() => onSelect("settings")}

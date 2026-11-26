@@ -1,19 +1,29 @@
+import { clearToken, getToken } from "./googleAuth"
+
 const API_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "")
 
 // True only when VITE_API_URL is set in frontend/.env.local
 export const API_CONFIGURED = Boolean(API_URL)
 
 async function request(path, method, payload) {
+  // The production backend runs AUTH_MODE=google and reads the ID token here
+  const token = getToken()
   let res
   try {
     res = await fetch(`${API_URL}${path}`, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body: JSON.stringify(payload),
     })
   } catch (err) {
     throw new Error("Couldn't reach the save server. Is the backend running?", { cause: err })
   }
+
+  // A rejected or expired token is useless from here on, so sign the tab out
+  if (res.status === 401) clearToken()
 
   if (!res.ok) {
     let message = `The save server returned an error (${res.status}).`
