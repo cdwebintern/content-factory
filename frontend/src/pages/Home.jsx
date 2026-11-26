@@ -8,7 +8,6 @@ import TasksPreview from "@/components/tasks/TasksPreview"
 import { useData } from "@/context/dataContext"
 import { news } from "@/data/news"
 import { posts } from "@/data/posts"
-import { team } from "@/data/team"
 import { scrollToId } from "@/lib/scroll"
 
 export default function Home() {
@@ -22,6 +21,7 @@ export default function Home() {
     toggleTask,
     cyclePriority,
     profile,
+    team,
   } = useData()
 
   // The sidebar's "Team" link sends us here with a section to scroll to

@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { X } from "lucide-react"
-import { getMember, team, currentUser } from "@/data/team"
+import { currentUser } from "@/data/team"
 import { serviceTags } from "@/data/nav"
+import { useData } from "@/context/dataContext"
 import { field, fieldLabel } from "@/lib/formStyles"
 import { focusRing } from "@/lib/glass"
 import { PRIORITIES } from "@/lib/priority"
@@ -16,6 +17,7 @@ const toInputDate = (d = new Date()) => {
 }
 
 export default function AddTaskForm({ onAdd, onCancel }) {
+  const { team } = useData()
   const [title, setTitle] = useState("")
   const [service, setService] = useState(serviceTags[0])
   const [due, setDue] = useState(toInputDate())
@@ -41,7 +43,7 @@ export default function AddTaskForm({ onAdd, onCancel }) {
       due: new Date(y, m - 1, d, 17, 0, 0, 0),
       priority,
       done: false,
-      assignee: getMember(assigneeId),
+      assignee: team.find((m) => m.id === assigneeId),
     })
   }
 

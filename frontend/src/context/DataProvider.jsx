@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { DataContext } from "./dataContext"
 import { tasks as demoTasks } from "@/data/tasks"
 import { meetings as demoMeetings } from "@/data/meetings"
-import { currentUser } from "@/data/team"
+import { currentUser, team as defaultTeam } from "@/data/team"
 import { useMeetingEditing } from "@/hooks/useMeetingEditing"
 import { useSheetData } from "@/hooks/useSheetData"
 import { useTaskEditing } from "@/hooks/useTaskEditing"
@@ -12,7 +12,7 @@ import { applyMeetingEdits, toMeetingObject } from "@/lib/meetingEdits"
 import { resolveDefaultLink } from "@/lib/meetingLink"
 import { todaysMeetings } from "@/lib/meetingState"
 import { nextPriority } from "@/lib/priority"
-import { loadSettings, saveSettings } from "@/lib/settings"
+import { defaultTeamMap, loadSettings, saveSettings } from "@/lib/settings"
 import { fetchSheetMeetings } from "@/lib/sheetMeetings"
 import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
 import { fetchSheetTasks } from "@/lib/sheetTasks"
@@ -31,11 +31,23 @@ export default function DataProvider({ children }) {
   const [demoMeetingsLocal, setDemoMeetingsLocal] = useState(NO_MEETING_EDITS)
   const [settings, setSettings] = useState(loadSettings)
 
-  // Your details: defaults from the team list, with device-only edits on top
-  const profile = useMemo(
-    () => ({ ...currentUser, ...settings.profile }),
-    [settings.profile]
+  // Team list with this device's renamed (and removed) members on top. Sheet
+  // tasks still match assignees by the original names, so the sheet keeps working.
+  const team = useMemo(
+    () => [
+      ...defaultTeam
+        .filter((m) => m.id === currentUser.id || !settings.teamRemoved.includes(m.id))
+        .map((m) => ({ ...m, ...settings.team[m.id] })),
+      ...settings.teamAdded,
+    ],
+    [settings.team, settings.teamRemoved, settings.teamAdded]
   )
+
+  // You are one of the team members, so your name and role come from `team`
+  const profile = useMemo(() => {
+    const me = team.find((m) => m.id === currentUser.id) ?? currentUser
+    return { ...me, status: settings.profile.status }
+  }, [team, settings.profile.status])
 
   // Sync mode: a sheet AND the save server are configured, so edits are saved to the sheet
   const syncMode = SHEET_CONFIGURED && API_CONFIGURED
@@ -51,10 +63,15 @@ export default function DataProvider({ children }) {
     () => (syncMode ? applyEdits(baseTasks, editing.edits, tasksSheet.syncStartedAt) : baseTasks),
     [syncMode, baseTasks, editing.edits, tasksSheet.syncStartedAt]
   )
-  const tasks = useMemo(
-    () => applyLocal(edited, syncMode ? NO_LOCAL : local, !SHEET_CONFIGURED),
-    [edited, syncMode, local]
-  )
+  const tasks = useMemo(() => {
+    const list = applyLocal(edited, syncMode ? NO_LOCAL : local, !SHEET_CONFIGURED)
+    // Tasks hold their own copy of the assignee, so hand them the current names
+    return list.map((task) =>
+      task.assignee
+        ? { ...task, assignee: team.find((m) => m.id === task.assignee.id) ?? task.assignee }
+        : task
+    )
+  }, [edited, syncMode, local, team])
 
   const meetings = useMemo(() => {
     if (syncMode) {
@@ -158,8 +175,61 @@ export default function DataProvider({ children }) {
   }
 
   const updateSettings = (patch) => setSettings((prev) => ({ ...prev, ...patch }))
-  const updateProfile = (patch) =>
-    setSettings((prev) => ({ ...prev, profile: { ...prev.profile, ...patch } }))
+
+  // Added members are edited where they are stored, so there is only one copy
+  const updateMember = (id, patch) =>
+    setSettings((prev) =>
+      prev.teamAdded.some((m) => m.id === id)
+        ? {
+            ...prev,
+            teamAdded: prev.teamAdded.map((m) => (m.id === id ? { ...m, ...patch } : m)),
+          }
+        : { ...prev, team: { ...prev.team, [id]: { ...prev.team[id], ...patch } } }
+    )
+
+  const addMember = ({ name, role }) =>
+    setSettings((prev) => ({
+      ...prev,
+      teamAdded: [
+        ...prev.teamAdded,
+        { id: `member-${Date.now()}`, name, role },
+      ],
+    }))
+
+  // Hides a member on this device. Their name stays in the saved `team` map, so
+  // restoring them after a reset brings any rename back with them.
+  // A member you added yourself is simply deleted.
+  const removeMember = (id) => {
+    if (id === currentUser.id) return
+    setSettings((prev) => {
+      if (prev.teamAdded.some((m) => m.id === id)) {
+        return { ...prev, teamAdded: prev.teamAdded.filter((m) => m.id !== id) }
+      }
+      return prev.teamRemoved.includes(id)
+        ? prev
+        : { ...prev, teamRemoved: [...prev.teamRemoved, id] }
+    })
+  }
+
+  // Puts the team back the way it started: original names and roles, every
+  // removed member back, and the members added on this device gone
+  const resetTeam = () =>
+    setSettings((prev) => ({
+      ...prev,
+      team: { ...defaultTeamMap },
+      teamRemoved: [],
+      teamAdded: [],
+    }))
+
+  // Name and role are shared with the team list, so editing your profile there
+  // and on the Settings page stay in step
+  const updateProfile = (patch) => {
+    const { status, ...details } = patch
+    if (Object.keys(details).length) updateMember(currentUser.id, details)
+    if (status !== undefined) {
+      setSettings((prev) => ({ ...prev, profile: { ...prev.profile, status } }))
+    }
+  }
   const resetLocal = () => {
     setLocal(emptyLocal())
     setDemoMeetingsLocal(NO_MEETING_EDITS)
@@ -204,6 +274,11 @@ export default function DataProvider({ children }) {
     },
     settings,
     updateSettings,
+    team,
+    updateMember,
+    addMember,
+    removeMember,
+    resetTeam,
     profile,
     updateProfile,
     defaultMeetingLink,

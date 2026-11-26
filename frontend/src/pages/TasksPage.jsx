@@ -8,7 +8,6 @@ import StatTile from "@/components/layout/StatTile"
 import AddTaskForm from "@/components/tasks/AddTaskForm"
 import TaskCard from "@/components/tasks/TaskCard"
 import { useData } from "@/context/dataContext"
-import { team } from "@/data/team"
 import { field } from "@/lib/formStyles"
 import { focusRing } from "@/lib/glass"
 import { scrollToId } from "@/lib/scroll"
@@ -34,9 +33,19 @@ const EMPTY = {
 }
 
 export default function TasksPage() {
-  const { tasks, stats, canEdit, tasksStatus, toggleTask, cyclePriority, addTask, deleteTask } =
-    useData()
-    const { canEditFields, editTask } = useData()
+  const {
+    tasks,
+    stats,
+    canEdit,
+    tasksStatus,
+    toggleTask,
+    cyclePriority,
+    addTask,
+    deleteTask,
+    canEditFields,
+    editTask,
+    team,
+  } = useData()
 
   const [filter, setFilter] = useState("pending")
   const [query, setQuery] = useState("")

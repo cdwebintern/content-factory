@@ -1,32 +1,85 @@
-import { currentUser } from "@/data/team"
+import { currentUser, team as defaultTeam } from "@/data/team"
 
 // Settings are remembered on this device only.
 const KEY = "content-space:settings:v1"
-const PROFILE_DEFAULTS = {
-  name: currentUser.name,
-  role: currentUser.role,
-  status: currentUser.status,
-}
-const DEFAULTS = { defaultMeetingLink: "", profile: PROFILE_DEFAULTS }
 const STATUSES = ["online", "meeting", "away"]
+
+// The original names and roles, used as the starting point and to reset back to
+const defaultTeamMap = Object.fromEntries(
+  defaultTeam.map(({ id, name, role }) => [id, { name, role }])
+)
+
+export { defaultTeamMap }
+
+const DEFAULTS = {
+  defaultMeetingLink: "",
+  // Your name and role live in `team` (you are one of the members), so only
+  // the status you set for yourself is stored separately
+  profile: { status: currentUser.status },
+  team: defaultTeamMap,
+  // Members hidden on this device. You can always see yourself, so your id is never kept here
+  teamRemoved: [],
+  // Members added on this device, in the order they were added
+  teamAdded: [],
+}
 
 const text = (value, fallback) =>
   typeof value === "string" && value.trim() ? value : fallback
+
+// Older versions kept your name and role in `profile`. Those become the
+// starting point for your own team entry, so earlier edits are not lost.
+function teamFrom(stored, legacyProfile) {
+  const out = {}
+  for (const [id, defaults] of Object.entries(defaultTeamMap)) {
+    const saved = stored?.[id] ?? {}
+    const legacy = id === currentUser.id ? legacyProfile ?? {} : {}
+    out[id] = {
+      name: text(saved.name, text(legacy.name, defaults.name)),
+      role: text(saved.role, text(legacy.role, defaults.role)),
+    }
+  }
+  return out
+}
+
+// Added members are stored as they were typed, but only keep entries that
+// still look like a member (an old or hand-edited value is simply dropped)
+function addedFrom(stored) {
+  if (!Array.isArray(stored)) return []
+  return stored
+    .filter(
+      (m) =>
+        m &&
+        typeof m.id === "string" &&
+        typeof m.name === "string" &&
+        m.name.trim() &&
+        typeof m.role === "string" &&
+        m.role.trim() &&
+        !(m.id in defaultTeamMap)
+    )
+    .slice(0, 50)
+    .map(({ id, name, role }) => ({ id, name: name.trim(), role: role.trim() }))
+}
 
 export function loadSettings() {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return DEFAULTS
     const parsed = JSON.parse(raw)
-    const profile = parsed.profile ?? {}
     return {
       defaultMeetingLink:
         typeof parsed.defaultMeetingLink === "string" ? parsed.defaultMeetingLink : "",
       profile: {
-        name: text(profile.name, PROFILE_DEFAULTS.name),
-        role: text(profile.role, PROFILE_DEFAULTS.role),
-        status: STATUSES.includes(profile.status) ? profile.status : PROFILE_DEFAULTS.status,
+        status: STATUSES.includes(parsed.profile?.status)
+          ? parsed.profile.status
+          : DEFAULTS.profile.status,
       },
+      team: teamFrom(parsed.team, parsed.profile),
+      teamRemoved: Array.isArray(parsed.teamRemoved)
+        ? parsed.teamRemoved.filter(
+            (id) => typeof id === "string" && id in defaultTeamMap && id !== currentUser.id
+          )
+        : [],
+      teamAdded: addedFrom(parsed.teamAdded),
     }
   } catch {
     return DEFAULTS
