@@ -15,11 +15,11 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-accent-ink/5 px-5">
+      <div className="flex h-16 shrink-0 items-center gap-2 border-b border-accent-ink/5 px-4">
         <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-honey font-bold text-white shadow-sm shadow-accent-strong/30">
           C
         </div>
-        <span className="min-w-0 flex-1 truncate text-lg font-semibold tracking-tight text-ink">
+        <span className="min-w-0 flex-1 whitespace-nowrap text-base font-semibold tracking-tight text-ink">
           Content Factory
         </span>
         <ThemeToggle />
