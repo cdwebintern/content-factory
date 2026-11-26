@@ -1,11 +1,12 @@
 import { useState } from "react"
-import { X } from "lucide-react"
+import { Loader2, X } from "lucide-react"
 import { currentUser } from "@/data/team"
 import { serviceTags } from "@/data/nav"
 import { useData } from "@/context/dataContext"
 import { field, fieldLabel } from "@/lib/formStyles"
 import { focusRing } from "@/lib/glass"
 import { PRIORITIES } from "@/lib/priority"
+import { isValidYMD } from "@/lib/taskEdits"
 import { cn } from "@/lib/utils"
 
 // <input type="date"> wants "YYYY-MM-DD" in LOCAL time
@@ -24,33 +25,47 @@ export default function AddTaskForm({ onAdd, onCancel }) {
   const [priority, setPriority] = useState("medium")
   const [assigneeId, setAssigneeId] = useState(currentUser.id)
   const [error, setError] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const clean = title.trim()
-    if (!clean) {
+    const cleanTitle = title.trim()
+
+    if (!cleanTitle) {
       setError("Please enter a task title.")
+      return
+    }
+    if (!isValidYMD(due)) {
+      setError("Please choose a valid due date.")
       return
     }
 
     // Build a real Date (5 PM local) so Today / Overdue logic keeps working
     const [y, m, d] = due.split("-").map(Number)
+    setError("")
+    setSubmitting(true)
 
-    onAdd({
-      id: `t-${Date.now()}`,
-      title: clean,
-      service,
-      due: new Date(y, m - 1, d, 17, 0, 0, 0),
-      priority,
-      done: false,
-      assignee: team.find((m) => m.id === assigneeId),
-    })
+    try {
+      await onAdd({
+        id: `t-${Date.now()}`,
+        title: cleanTitle,
+        service,
+        due: new Date(y, m - 1, d, 17, 0, 0, 0),
+        priority,
+        done: false,
+        assignee: team.find((m) => m.id === assigneeId),
+      })
+    } catch (err) {
+      setError(err?.message || "Couldn't add the task. Please try again.")
+      setSubmitting(false)
+    }
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      onKeyDown={(e) => e.key === "Escape" && onCancel()}
+      onKeyDown={(e) => e.key === "Escape" && !submitting && onCancel()}
+      aria-busy={submitting}
       className="space-y-3 rounded-2xl border border-glass-line bg-glass/70 p-4 shadow-sm shadow-shade/5"
     >
       <div className="flex items-center justify-between">
@@ -58,8 +73,9 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         <button
           type="button"
           onClick={onCancel}
+          disabled={submitting}
           aria-label="Close form"
-          className={cn("rounded-full p-2 text-ink-faint transition-colors hover:bg-accent-soft hover:text-accent-burnt", focusRing)}
+          className={cn("rounded-full p-2 text-ink-faint transition-colors hover:bg-accent-soft hover:text-accent-burnt disabled:cursor-not-allowed disabled:opacity-50", focusRing)}
         >
           <X className="h-4 w-4" />
         </button>
@@ -79,15 +95,9 @@ export default function AddTaskForm({ onAdd, onCancel }) {
             if (error) setError("")
           }}
           placeholder="e.g. Send content calendar to Peak Fitness"
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? "new-task-error" : undefined}
+          aria-invalid={Boolean(error) && !title.trim()}
           className={field}
         />
-        {error && (
-          <p id="new-task-error" role="alert" className="mt-1 text-xs text-danger">
-            {error}
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -117,8 +127,13 @@ export default function AddTaskForm({ onAdd, onCancel }) {
             id="new-task-due"
             type="date"
             required
+            min="2000-01-01"
+            max="2100-12-31"
             value={due}
-            onChange={(e) => setDue(e.target.value)}
+            onChange={(e) => {
+              setDue(e.target.value)
+              if (error) setError("")
+            }}
             className={field}
           />
         </div>
@@ -166,12 +181,19 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         </div>
       </div>
 
+      {error && (
+        <p role="alert" className="text-xs font-medium text-danger">
+          {error}
+        </p>
+      )}
+
       <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
         <button
           type="button"
           onClick={onCancel}
+          disabled={submitting}
           className={cn(
-            "rounded-full border border-glass-line bg-glass/70 px-4 py-2.5 text-sm font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass hover:text-accent-ink",
+            "rounded-full border border-glass-line bg-glass/70 px-4 py-2.5 text-sm font-medium text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-mist hover:bg-glass hover:text-accent-ink disabled:cursor-not-allowed disabled:opacity-60",
             focusRing
           )}
         >
@@ -179,12 +201,20 @@ export default function AddTaskForm({ onAdd, onCancel }) {
         </button>
         <button
           type="submit"
+          disabled={submitting}
           className={cn(
-            "hover-lift rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent",
+            "hover-lift inline-flex items-center justify-center gap-2 rounded-full bg-accent-strong px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-shade/20 hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60",
             focusRing
           )}
         >
-          Add task
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              Adding task…
+            </>
+          ) : (
+            "Add task"
+          )}
         </button>
       </div>
     </form>

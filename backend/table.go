@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 	"strconv"
 	"strings"
@@ -337,14 +338,21 @@ func (t *sheetTable) Append(ctx context.Context, fields map[string]any, newID fu
 	}
 
 	// The new row copies the look of the row above it, so numeric dates and times
-	// display as dates and times instead of plain numbers.
+	// display as dates and times instead of plain numbers. Formatting is cosmetic,
+	// so it runs alongside the value write; a formatting failure must not make a
+	// task that was saved look unsaved.
+	formatDone := make(chan error, 1)
 	if snap.lastIDRow >= 2 {
-		if err := t.copyRowFormat(ctx, snap.lastIDRow, row); err != nil {
-			return "", err
-		}
+		go func() { formatDone <- t.copyRowFormat(ctx, snap.lastIDRow, row) }()
+	} else {
+		formatDone <- nil
 	}
-	if err := t.write(ctx, data); err != nil {
-		return "", err
+	writeErr := t.write(ctx, data)
+	if formatErr := <-formatDone; formatErr != nil {
+		slog.Warn("copy row formatting", "table", t.spec.name, "row", row, "error", formatErr)
+	}
+	if writeErr != nil {
+		return "", writeErr
 	}
 	return id, nil
 }

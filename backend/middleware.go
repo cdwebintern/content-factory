@@ -16,6 +16,7 @@ func newRouter(cfg config, s *server, auth authenticator) http.Handler {
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 	})
+	mux.Handle("POST /api/tasks", auth.wrap(http.HandlerFunc(s.createTask)))
 	mux.Handle("PATCH /api/tasks/{id}", auth.wrap(http.HandlerFunc(s.updateTask)))
 	mux.Handle("PATCH /api/meetings/{id}", auth.wrap(http.HandlerFunc(s.updateMeeting)))
 	mux.Handle("POST /api/meetings", auth.wrap(http.HandlerFunc(s.createMeeting)))

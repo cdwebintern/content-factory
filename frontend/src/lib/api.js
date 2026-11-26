@@ -40,9 +40,15 @@ async function request(path, method, payload) {
 }
 
 // Sends changed fields to the Go backend, which writes them to the sheet.
-// patch can hold: title, due ("yyyy-mm-dd"), priority, done
+// patch can hold: title, service, due ("yyyy-mm-dd"), priority, done, assignee
 export function patchTask(id, patch) {
   return request(`/api/tasks/${encodeURIComponent(id)}`, "PATCH", patch)
+}
+
+// Appends a new task row to the Google Sheet via the Go backend.
+// Requires: title, due ("yyyy-mm-dd"). Optional: service, priority, assignee
+export function createTask(task) {
+  return request("/api/tasks", "POST", task)
 }
 
 // Sends changed meeting fields to the Go backend, which writes them to the sheet.

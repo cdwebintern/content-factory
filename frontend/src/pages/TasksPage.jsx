@@ -37,6 +37,7 @@ export default function TasksPage() {
     tasks,
     stats,
     canEdit,
+    canAddTasks,
     tasksStatus,
     toggleTask,
     cyclePriority,
@@ -88,12 +89,12 @@ export default function TasksPage() {
     setAssignee("all")
   }
 
-  const handleAdd = (task) => {
-    addTask(task)
+  const handleAdd = async (task) => {
+    const id = await addTask(task)
     setAdding(false)
     setFilter("pending") // make sure the new task is visible
     clearFilters()
-    setLastAddedId(task.id)
+    setLastAddedId(id ?? task.id)
   }
 
   // After adding: scroll the new task into view, then drop the highlight
@@ -105,7 +106,7 @@ export default function TasksPage() {
   }, [lastAddedId])
 
   const addButton =
-    canEdit && !adding ? (
+    canAddTasks && !adding ? (
       <button
         type="button"
         onClick={() => setAdding(true)}
@@ -124,11 +125,11 @@ export default function TasksPage() {
       <PageHeader
         title="Tasks"
         description={
-          canEdit
-            ? "Every task, with its service, due date, priority and owner."
-            : canEditFields
-  ? "Every task from your Google Sheet. Changes you make here (title, due date, priority, done) are saved back to the sheet."
-  : "Every task from your Google Sheet. Edit tasks in the sheet; ticks and priority changes made here stay on this device."
+          canAddTasks && canEditFields
+            ? "Every task from your Google Sheet. New tasks and changes made here are saved back to the sheet."
+            : canAddTasks
+              ? "Every task, with its service, due date, priority and owner."
+              : "Every task from your Google Sheet. Edit tasks in the sheet; ticks and priority changes made here stay on this device."
         }
         action={addButton}
       />
@@ -149,7 +150,9 @@ export default function TasksPage() {
         description={`Showing ${visible.length} of ${tasks.length}`}
       >
         <div className="space-y-4">
-          {adding && <AddTaskForm onAdd={handleAdd} onCancel={() => setAdding(false)} />}
+          {adding && (
+            <AddTaskForm onAdd={handleAdd} onCancel={() => setAdding(false)} />
+          )}
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_repeat(3,minmax(0,11rem))]">
             <SearchField

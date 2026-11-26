@@ -91,6 +91,16 @@ export function useSheetData(fetcher, refreshMs = 60000) {
     setReloadKey((k) => k + 1)
   }, [enabled])
 
+  // Shows a just-created row immediately; the next reload replaces it with the
+  // sheet's own copy. Ignored when the same id is already in the list.
+  const prepend = useCallback((item) => {
+    if (!item?.id) return
+    setData((prev) => ({
+      items: [item, ...(prev?.items ?? NO_ITEMS).filter((existing) => existing.id !== item.id)],
+      skipped: prev?.skipped ?? NO_SKIPPED,
+    }))
+  }, [])
+
   const status = !enabled ? "demo" : loading ? "loading" : data ? "ready" : "error"
 
   return {
@@ -102,5 +112,6 @@ export function useSheetData(fetcher, refreshMs = 60000) {
     syncStartedAt,
     refreshing,
     reload,
+    prepend,
   }
 }

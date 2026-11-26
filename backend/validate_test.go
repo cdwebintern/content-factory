@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func ptr[T any](v T) *T { return &v }
 
@@ -42,6 +45,66 @@ func TestTaskPatchCleansInput(t *testing.T) {
 	}
 	if *p.Priority != "high" {
 		t.Errorf("priority = %q, want %q", *p.Priority, "high")
+	}
+}
+
+func TestTaskPatchNewFields(t *testing.T) {
+	tests := []struct {
+		name    string
+		patch   taskPatch
+		wantErr bool
+	}{
+		{"good service and assignee", taskPatch{Service: ptr("SEO"), Assignee: ptr("Sara")}, false},
+		{"service too long", taskPatch{Service: ptr(strings.Repeat("a", 61))}, true},
+		{"assignee too long", taskPatch{Assignee: ptr(strings.Repeat("a", 81))}, true},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.patch.validate()
+			if (err != nil) != tc.wantErr {
+				t.Errorf("validate() error = %v, wantErr %v", err, tc.wantErr)
+			}
+		})
+	}
+}
+
+func TestTaskApplyDefaults(t *testing.T) {
+	missing := taskPatch{Title: ptr("Send report")}
+	if err := missing.applyDefaults(); err == nil {
+		t.Error("expected an error when due is missing")
+	}
+
+	p := taskPatch{Title: ptr("Send report"), Due: ptr("2026-12-02")}
+	if err := p.applyDefaults(); err != nil {
+		t.Fatal(err)
+	}
+	if err := p.validate(); err != nil {
+		t.Fatal(err)
+	}
+	if p.Priority == nil || *p.Priority != "medium" {
+		t.Errorf("priority default = %v, want medium", p.Priority)
+	}
+}
+
+func TestNextTaskID(t *testing.T) {
+	tests := []struct {
+		name     string
+		existing []string
+		want     string
+	}{
+		{"no tasks yet", nil, "T001"},
+		{"continues the sequence", []string{"T001", "T002", "T010"}, "T011"},
+		{"matches lower-case ids", []string{"t007"}, "T008"},
+		{"ignores other ids", []string{"x", "M003"}, "T001"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := nextTaskID(tc.existing); got != tc.want {
+				t.Errorf("nextTaskID() = %q, want %q", got, tc.want)
+			}
+		})
 	}
 }
 

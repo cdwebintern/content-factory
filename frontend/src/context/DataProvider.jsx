@@ -6,7 +6,7 @@ import { currentUser, team as defaultTeam } from "@/data/team"
 import { useMeetingEditing } from "@/hooks/useMeetingEditing"
 import { useSheetData } from "@/hooks/useSheetData"
 import { useTaskEditing } from "@/hooks/useTaskEditing"
-import { API_CONFIGURED } from "@/lib/api"
+import { API_CONFIGURED, createTask as createTaskOnServer } from "@/lib/api"
 import { applyLocal, emptyLocal, loadLocal, saveLocal, withField } from "@/lib/localTasks"
 import { applyMeetingEdits, toMeetingObject } from "@/lib/meetingEdits"
 import { resolveDefaultLink } from "@/lib/meetingLink"
@@ -16,7 +16,7 @@ import { defaultTeamMap, loadSettings, saveSettings } from "@/lib/settings"
 import { fetchSheetMeetings } from "@/lib/sheetMeetings"
 import { SHEET_CONFIGURED } from "@/lib/sheetsApi"
 import { fetchSheetTasks } from "@/lib/sheetTasks"
-import { applyEdits, stageEdits } from "@/lib/taskEdits"
+import { applyEdits, stageEdits, toYMD } from "@/lib/taskEdits"
 import { getTaskStats } from "@/lib/taskStats"
 
 const NO_LOCAL = emptyLocal()
@@ -138,7 +138,26 @@ export default function DataProvider({ children }) {
     if (syncMode) editing.edit(id, fields)
   }
 
-  const addTask = (task) => setLocal((prev) => ({ ...prev, added: [task, ...prev.added] }))
+  // In sync mode the sheet is the source of truth, so the server picks the id and
+  // writes the row. Otherwise the task is kept on this device only.
+  const addTask = async (task) => {
+    if (!syncMode) {
+      setLocal((prev) => ({ ...prev, added: [task, ...prev.added] }))
+      return task.id
+    }
+    const { id } = await createTaskOnServer({
+      title: task.title,
+      service: task.service,
+      due: toYMD(task.due),
+      priority: task.priority,
+      assignee: task.assignee?.name ?? "",
+    })
+    // Show the task straight away under the id the server assigned, then let the
+    // sheet reload replace it with the saved row in the background.
+    tasksSheet.prepend({ ...task, id })
+    tasksSheet.reload()
+    return id
+  }
 
   const deleteTask = (id) =>
     setLocal((prev) => {
@@ -245,7 +264,8 @@ export default function DataProvider({ children }) {
     meetings,
     stats: getTaskStats(tasks),
     meetingsTodayCount: todaysMeetings(meetings).length,
-    canEdit: !SHEET_CONFIGURED, // add and delete tasks: demo mode only
+    canEdit: !SHEET_CONFIGURED, // delete tasks: demo mode only
+    canAddTasks: syncMode || !SHEET_CONFIGURED, // new tasks are saved to the sheet in sync mode
     canEditFields: syncMode, // title and due date: saved to the sheet
     canAddMeetings: syncMode || !SHEET_CONFIGURED,
     canEditMeetings: syncMode || !SHEET_CONFIGURED,
