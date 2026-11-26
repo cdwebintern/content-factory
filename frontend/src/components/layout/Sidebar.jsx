@@ -2,12 +2,14 @@ import { Settings } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { navGroups, serviceTags } from "@/data/nav"
-import { currentUser, getInitials } from "@/data/team"
+import { getInitials } from "@/data/team"
+import { useData } from "@/context/dataContext"
 import { cn } from "@/lib/utils"
 import ThemeToggle from "./ThemeToggle"
 
 // Shared by the desktop sidebar AND the mobile sheet
 export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
+  const { profile } = useData()
   const settingsActive = active === "settings"
   const profileActive = active === "profile"
 
@@ -117,14 +119,14 @@ export function SidebarContent({ active, onSelect, tasksCount = 0 }) {
               profileActive ? "bg-glass text-accent-deep" : "bg-ink text-accent-mist"
             )}
           >
-            {getInitials(currentUser.name)}
+            {getInitials(profile.name)}
           </span>
           <span className="min-w-0 flex-1 text-left leading-tight">
-            <span className="block truncate text-sm font-semibold">{currentUser.name}</span>
+            <span className="block truncate text-sm font-semibold">{profile.name}</span>
             <span
               className={cn("block truncate text-xs", profileActive ? "text-white/80" : "text-ink-muted")}
             >
-              Profile · {currentUser.role}
+              Profile · {profile.role}
             </span>
           </span>
         </button>

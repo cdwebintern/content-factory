@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { DataContext } from "./dataContext"
 import { tasks as demoTasks } from "@/data/tasks"
 import { meetings as demoMeetings } from "@/data/meetings"
+import { currentUser } from "@/data/team"
 import { useMeetingEditing } from "@/hooks/useMeetingEditing"
 import { useSheetData } from "@/hooks/useSheetData"
 import { useTaskEditing } from "@/hooks/useTaskEditing"
@@ -29,6 +30,12 @@ export default function DataProvider({ children }) {
   const [local, setLocal] = useState(loadLocal)
   const [demoMeetingsLocal, setDemoMeetingsLocal] = useState(NO_MEETING_EDITS)
   const [settings, setSettings] = useState(loadSettings)
+
+  // Your details: defaults from the team list, with device-only edits on top
+  const profile = useMemo(
+    () => ({ ...currentUser, ...settings.profile }),
+    [settings.profile]
+  )
 
   // Sync mode: a sheet AND the save server are configured, so edits are saved to the sheet
   const syncMode = SHEET_CONFIGURED && API_CONFIGURED
@@ -151,6 +158,8 @@ export default function DataProvider({ children }) {
   }
 
   const updateSettings = (patch) => setSettings((prev) => ({ ...prev, ...patch }))
+  const updateProfile = (patch) =>
+    setSettings((prev) => ({ ...prev, profile: { ...prev.profile, ...patch } }))
   const resetLocal = () => {
     setLocal(emptyLocal())
     setDemoMeetingsLocal(NO_MEETING_EDITS)
@@ -195,6 +204,8 @@ export default function DataProvider({ children }) {
     },
     settings,
     updateSettings,
+    profile,
+    updateProfile,
     defaultMeetingLink,
     resetLocal,
     toggleTask,

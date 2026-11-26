@@ -8,7 +8,7 @@ import TasksPreview from "@/components/tasks/TasksPreview"
 import { useData } from "@/context/dataContext"
 import { news } from "@/data/news"
 import { posts } from "@/data/posts"
-import { currentUser, team } from "@/data/team"
+import { team } from "@/data/team"
 import { scrollToId } from "@/lib/scroll"
 
 export default function Home() {
@@ -21,6 +21,7 @@ export default function Home() {
     meetingsStatus,
     toggleTask,
     cyclePriority,
+    profile,
   } = useData()
 
   // The sidebar's "Team" link sends us here with a section to scroll to
@@ -33,7 +34,7 @@ export default function Home() {
   return (
     <>
       <div id="overview" className="scroll-mt-20">
-        <WelcomeHero user={currentUser} stats={stats} meetings={meetings} />
+        <WelcomeHero user={profile} stats={stats} meetings={meetings} />
       </div>
 
       {/* One column until xl. Then tasks and meetings share the wide left side, socials on the right */}
@@ -53,7 +54,7 @@ export default function Home() {
         </div>
 
         <div id="socials" className="min-w-0 scroll-mt-20">
-          <SocialColumn posts={posts} team={team} currentUserId={currentUser.id} />
+          <SocialColumn posts={posts} team={team} currentUserId={profile.id} />
         </div>
       </div>
 
