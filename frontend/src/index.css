@@ -76,19 +76,21 @@ html.theme-switching *::after {
    Red / emerald are intentionally NOT here: they only mark
    semantic states (overdue, error, online, completed). */
 @theme {
-  /* Accent ramp: pale washes -> vivid orange -> deep brown */
-  --color-accent-wash: #fff7ed; /* page + section wash */
-  --color-accent-soft: #ffedd5; /* soft chips, hovers */
-  --color-accent-mist: #fed7aa; /* card tints */
-  --color-accent-tint: #fdba74; /* borders, decorations */
-  --color-accent-light: #fb923c; /* light accent text/icons */
-  --color-accent: #f97316; /* primary accent */
-  --color-accent-strong: #ea580c; /* primary buttons, rings */
-  --color-accent-deep: #c2410c; /* pressed / emphasis */
-  --color-accent-burnt: #9a3412; /* deep tint text */
-  --color-accent-ink: #7c2d12; /* headings on tint, shadows */
-  --color-accent-dark: #431407; /* strongest tint text */
-  --color-accent-honey: #f59e0b; /* gradient partner for accent */
+  /* Accent ramp: pale washes -> light orange -> deep brown.
+     Every step sits one shade lighter than the original ramp, so fills read
+     as a soft orange instead of a saturated one. */
+  --color-accent-wash: #fffbf7; /* page + section wash */
+  --color-accent-soft: #fff2e4; /* soft chips, hovers */
+  --color-accent-mist: #ffe4cc; /* card tints */
+  --color-accent-tint: #fed7aa; /* borders, decorations */
+  --color-accent-light: #fdba74; /* light accent text/icons */
+  --color-accent: #fb923c; /* primary accent */
+  --color-accent-strong: #f97316; /* primary buttons, rings */
+  --color-accent-deep: #ea580c; /* pressed / emphasis */
+  --color-accent-burnt: #c2410c; /* deep tint text */
+  --color-accent-ink: #9a3412; /* headings on tint, shadows */
+  --color-accent-dark: #7c2d12; /* strongest tint text */
+  --color-accent-honey: #fbbf24; /* gradient partner for accent */
   --color-shade: #431407; /* shadow cast by glass + chips */
 
   /* Secondary hue: green (~145deg), the split-complement of orange.
@@ -130,7 +132,7 @@ html.theme-switching *::after {
   --color-ok-border: #a7f3d0;
 
   /* Shared glass elevation */
-  --shadow-glass: 0 12px 40px -14px rgb(124 45 18 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.85);
+  --shadow-glass: 0 12px 40px -14px rgb(154 52 18 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.85);
 }
 
 :root {
